@@ -1,0 +1,196 @@
+{
+  "updatedAt": "2026-03-17T14:30:47.127Z",
+  "createdAt": "2025-08-25T10:47:43.544Z",
+  "id": "9SYtkBfHud7Wuf4q",
+  "name": "My workflow",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1024,
+        -160
+      ],
+      "id": "6479397c-c5dc-44fb-9d74-d492e6d1d0f4",
+      "name": "When chat message received",
+      "webhookId": "1b970ee1-9f91-4c3e-8645-3c95e8dc1c77"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -720,
+        -176
+      ],
+      "id": "f09093e2-fc5e-4c53-9ffd-91a34eeb9397",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "kimi-k2.5:cloud",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -816,
+        64
+      ],
+      "id": "4c64ab9c-3da0-438f-bf29-1b0867af3903",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "WrAMU0Lzr6FhjRwo",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "58c4cba1-87da-43e5-9527-523d7a6cc372",
+  "activeVersionId": "c6343437-c267-4ca2-96f3-04bfc9ff117d",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-08-25T10:47:43.547Z",
+      "createdAt": "2025-08-25T10:47:43.547Z",
+      "role": "workflow:owner",
+      "workflowId": "9SYtkBfHud7Wuf4q",
+      "projectId": "IQyuKtxIScgEzusN"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-03-17T14:28:18.000Z",
+    "createdAt": "2026-03-17T11:01:45.783Z",
+    "versionId": "c6343437-c267-4ca2-96f3-04bfc9ff117d",
+    "workflowId": "9SYtkBfHud7Wuf4q",
+    "nodes": [
+      {
+        "parameters": {
+          "public": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -1024,
+          -160
+        ],
+        "id": "6479397c-c5dc-44fb-9d74-d492e6d1d0f4",
+        "name": "When chat message received",
+        "webhookId": "1b970ee1-9f91-4c3e-8645-3c95e8dc1c77"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -720,
+          -176
+        ],
+        "id": "f09093e2-fc5e-4c53-9ffd-91a34eeb9397",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -816,
+          64
+        ],
+        "id": "4c64ab9c-3da0-438f-bf29-1b0867af3903",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "rdARGFpMVlN9nkjs",
+            "name": "OpenAi account 2"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "V Cat",
+    "name": "Version c6343437",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
