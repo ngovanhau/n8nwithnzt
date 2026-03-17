@@ -1,0 +1,149 @@
+{
+  "updatedAt": "2025-09-30T09:59:30.000Z",
+  "createdAt": "2025-09-30T08:38:12.282Z",
+  "id": "XcBP2vSaS6Yp1dMz",
+  "name": "SendEmail",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "sendMail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ba4338cc-f40c-490f-9773-b40bf81d841b",
+      "name": "Webhook",
+      "webhookId": "cbed0a2a-7667-4ca0-811f-04de203e8527"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.query.mail }}",
+        "subject": "Xác thực Email từ Ứng dụng Mobile Micco",
+        "message": "=Hãy truy cập vào link này để xác thực thay doi mat khau.\n<a href=\"https://lda-api-dev-01.nzt.vn/api/Auth/verifyEmail?token={{ $json.query.mess }}\"> Click here </a>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "51f90994-46b4-44ff-966e-1cd5942e19fc",
+      "name": "Send a message",
+      "webhookId": "e5f8cd7a-c28b-49c1-9e74-8c6b862d9fa3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "dc4QUg3nAz6Kaou6",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "773dbefc-19ec-455e-9c9e-c4919d01f997",
+  "activeVersionId": "773dbefc-19ec-455e-9c9e-c4919d01f997",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-09-30T08:38:12.285Z",
+      "createdAt": "2025-09-30T08:38:12.285Z",
+      "role": "workflow:owner",
+      "workflowId": "XcBP2vSaS6Yp1dMz",
+      "projectId": "IQyuKtxIScgEzusN"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-03-17T09:41:35.020Z",
+    "createdAt": "2026-03-17T09:41:35.020Z",
+    "versionId": "773dbefc-19ec-455e-9c9e-c4919d01f997",
+    "workflowId": "XcBP2vSaS6Yp1dMz",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "sendMail",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "ba4338cc-f40c-490f-9773-b40bf81d841b",
+        "name": "Webhook",
+        "webhookId": "cbed0a2a-7667-4ca0-811f-04de203e8527"
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $json.query.mail }}",
+          "subject": "Xác thực Email từ Ứng dụng Mobile Micco",
+          "message": "=Hãy truy cập vào link này để xác thực thay doi mat khau.\n<a href=\"https://lda-api-dev-01.nzt.vn/api/Auth/verifyEmail?token={{ $json.query.mess }}\"> Click here </a>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          208,
+          0
+        ],
+        "id": "51f90994-46b4-44ff-966e-1cd5942e19fc",
+        "name": "Send a message",
+        "webhookId": "e5f8cd7a-c28b-49c1-9e74-8c6b862d9fa3",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "dc4QUg3nAz6Kaou6",
+            "name": "Gmail account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "system migration",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "tags": []
+}
