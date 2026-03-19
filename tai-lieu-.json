@@ -3,7 +3,7 @@
   "createdAt": "2026-03-17T11:04:56.451Z",
   "id": "FiVM5BbVWFpj5Gti",
   "name": "Tai lieu",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -586,7 +586,7 @@
     ]
   },
   "versionId": "020bb2fa-225c-44cd-8c31-9414cfd4ec64",
-  "activeVersionId": null,
+  "activeVersionId": "020bb2fa-225c-44cd-8c31-9414cfd4ec64",
   "triggerCount": 0,
   "shared": [
     {
@@ -597,6 +597,577 @@
       "projectId": "IQyuKtxIScgEzusN"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2026-03-18T07:54:54.000Z",
+    "createdAt": "2026-03-17T14:43:28.031Z",
+    "versionId": "020bb2fa-225c-44cd-8c31-9414cfd4ec64",
+    "workflowId": "FiVM5BbVWFpj5Gti",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT COUNT(*) AS tong_so_tai_lieu\nFROM R5DOCUMENTS;\n\nSELECT \n    d.DOC_ORG AS don_vi,\n    COUNT(*) AS so_tai_lieu\nFROM R5DOCUMENTS AS d\nGROUP BY d.DOC_ORG\nORDER BY so_tai_lieu DESC;\n\nselect top 5 \nDOC_CODE as ma_tai_lieu,\nDOC_DESC as ten_tai_lieu,\nDOC_ORG as don_vi\nfrom R5DOCUMENTS \norder by DOC_CREATED desc\n"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "d15a9b1b-80c1-4f14-8fb4-a039c75dfa9f",
+        "name": "Microsoft SQL (Lấy thông tin công việc toàn đơn vị)13",
+        "alwaysOutputData": true,
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI phân loại yêu cầu về tài liệu.\n\nInput:\n{{ $json.ChatInput }}\n\nPhân loại câu hỏi vào 1 trong 3 case:\n\n1 = Tổng quan tài liệu (câu hỏi chung)\n2 = Tổng quan tài liệu của một đơn vị\n3 = Xem chi tiết một tài liệu cụ thể\n\nQuy tắc:\n\nCase 3:\n- Nếu câu hỏi có tên file, mã tài liệu, hoặc đuôi file như .pdf, .doc, .docx, .xls, .xlsx\n- Ví dụ: \"xem tài liệu ABC.pdf\"\n\nCase 2:\n- Nếu câu hỏi có nhắc đến đơn vị như MDV, LDV hoặc có cụm \"đơn vị\"\n\nCase 1:\n- Các câu hỏi còn lại về tài liệu chung như:\n  \"tài liệu\"\n  \"xem tài liệu\"\n  \"tổng quan tài liệu\"\n  \"thống kê tài liệu\"\n\nChỉ trả về đúng JSON, không giải thích:\n\n{\n  \"case\": \"number\",\n  \"query\": \"{{ $json.ChatInput }}\"\n}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "=xem tài liệu 5_THTB_ANVT_signed_27.pdf"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 1.9,
+        "position": [
+          -816,
+          480
+        ],
+        "id": "509777d5-520d-473e-b1b9-8f373591d390",
+        "name": "AI Agent26",
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 1000,
+        "executeOnce": false,
+        "notesInFlow": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all().map(i => i.json);\n\nlet tongTaiLieu = 0;\nlet donVi = \"\";\nlet danhSach = [];\n\nfor (const item of items) {\n\n  if (item[\"tong_so_tai_lieu\"] && !item[\"ma_tai_lieu\"]) {\n    tongTaiLieu = item[\"tong_so_tai_lieu\"];\n  }\n\n  if (item[\"don_vi\"] && item[\"don_vi\"] !== \"\") {\n    donVi = item[\"don_vi\"];\n  }\n\n  if (item[\"ma_tai_lieu\"]) {\n    danhSach.push(item);\n  }\n}\n\n// nếu đơn vị = * thì đổi thành \"chung\"\nif (donVi === \"*\") {\n  donVi = \"chung\";\n}\n\nlet answer = `- **Tổng số tài liệu của đơn vị ${donVi || \"toàn hệ thống\"}:** ${tongTaiLieu}\\n\\n`;\n\nanswer += `- **Một số tài liệu trong hệ thống:**\\n`;\n\ndanhSach.slice(0,5).forEach(tl => {\n  answer += `+ ${tl.ten_tai_lieu} (Mã: ${tl.ma_tai_lieu})\\n`;\n});\n\nconst suggestions = [];\n\n// đề xuất tổng quan theo đơn vị\nif (donVi) {\n  suggestions.push(`tổng quan tài liệu của đơn vị ${donVi}`);\n}\n\n// đề xuất mở tài liệu\ndanhSach.slice(0,2).forEach(tl => {\n  suggestions.push(`xem tài liệu ${tl.ten_tai_lieu}`);\n});\n\nreturn [\n{\n  json: {\n    answer: answer.trim(),\n    suggestions\n  }\n}\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          0
+        ],
+        "id": "c65d4b62-729d-4546-b35f-304d009beb5f",
+        "name": "Code18",
+        "retryOnFail": true,
+        "waitBetweenTries": 10
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "ChatInput"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -1072,
+          480
+        ],
+        "id": "4ff42588-f593-48b4-a2c7-615a9f68d3f3",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"case\": \"number\",\n  \"query\": \"{{ $json.ChatInput }}\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -640,
+          688
+        ],
+        "id": "7c436ece-9f48-438f-8516-fe92644c07dc",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.output.query }}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "Bạn là AI chuyên tách mã hoặc tên tài liệu từ câu hỏi của người dùng.\n\nInput:\n{{ $json.query }}\n\nNhiệm vụ:\nXác định mã tài liệu hoặc tên tài liệu được nhắc đến trong câu hỏi.\n\nQuy tắc:\n- Nếu câu hỏi có mã tài liệu (ví dụ: 11110, DOC123, TL001) → trả về mã đó.\n- Nếu câu hỏi có tên tài liệu → trả về phần tên tài liệu.\n- Nếu câu hỏi dạng \"xem tài liệu <tên tài liệu>\" → chỉ lấy phần <tên tài liệu>.\n- Không thêm chữ \"tài liệu\".\n- Không thêm mô tả.\n- Nếu không tìm thấy tài liệu → trả về chuỗi rỗng \"\".\n\nVí dụ:\n\"xem tài liệu 5_THTB_ANVT_signed_27.pdf\"\n→ \"5_THTB_ANVT_signed_27.pdf\"\n\n\"xem tài liệu 11110\"\n→ \"11110\"\n\n\"xem file 4_DTTB_BACHNX_signed_22.pdf\"\n→ \"4_DTTB_BACHNX_signed_22.pdf\"\n\nChỉ trả về đúng JSON:\n\n{\n \"tai_lieu\": \"\"\n}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          0,
+          864
+        ],
+        "id": "beabf0f2-de03-4b76-8311-50ee2dbcadc9",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n\t\"tai_lieu\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          192,
+          1040
+        ],
+        "id": "a0ee3a85-3b68-4aa2-af35-7ef7bd68d655",
+        "name": "Structured Output Parser1"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT  \n    DOC_CODE AS ma_tai_lieu,\n    DOC_DESC AS ten_tai_lieu,\n    DOC_FILENAME AS duong_dan\nFROM R5DOCUMENTS \nWHERE \n    DOC_CODE = N'{{ $json.output.tai_lieu }}' \n    OR DOC_DESC LIKE N'%{{ $json.output.tai_lieu }}%';\n"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          368,
+          864
+        ],
+        "id": "366d3ec4-68cd-4f32-bd97-910946ff3f55",
+        "name": "Microsoft SQL",
+        "alwaysOutputData": true,
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.output.query }}",
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "Bạn là AI chuyên tách mã đơn vị từ câu hỏi của người dùng.\n\nInput:\n{{ $json.query }}\n\nNhiệm vụ:\nXác định trong câu hỏi có nhắc đến đơn vị nào.\n\nCác đơn vị hợp lệ:\n\nMDV = Chi nhánh Mỏ Tuyển Sin Quyền Lào Cai  \nLDV = Chi nhánh Luyện đồng Lào Cai\n* = Chung\n\nQuy tắc nhận diện:\n\n- Nếu câu hỏi có \"MDV\" hoặc \"đơn vị MDV\" → trả về \"MDV\"\n- Nếu câu hỏi có \"LDV\" hoặc \"đơn vị LDV\" → trả về \"LDV\"\n- Nếu câu hỏi có \"Chi nhánh Mỏ Tuyển Sin Quyền Lào Cai\" → trả về \"MDV\"\n- Nếu câu hỏi có \"Chi nhánh Luyện đồng Lào Cai\" → trả về \"LDV\"\n- So khớp không phân biệt hoa thường\n- Nếu không tìm thấy đơn vị → trả về \"\"\n\nChỉ trả về JSON hợp lệ, không giải thích, không markdown.\n\nOutput:\n{\n  \"ma_don_vi\": \"\"\n}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          16,
+          480
+        ],
+        "id": "cc2ae60e-2a2b-4007-9d2f-869747dad655",
+        "name": "AI Agent1"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"ma_don_vi\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          192,
+          672
+        ],
+        "id": "570a9796-6318-4261-ba71-6caeb7dfe98a",
+        "name": "Structured Output Parser2"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "\nSELECT \n    d.DOC_ORG AS don_vi,\n    COUNT(*) AS so_tai_lieu\nFROM R5DOCUMENTS AS d\nwhere d.DOC_ORG = '{{ $json.output.ma_don_vi }}'\ngroup by d.DOC_ORG\n\nselect top 5 \nDOC_CODE as ma_tai_lieu,\nDOC_DESC as ten_tai_lieu,\nDOC_ORG as don_vi\nfrom R5DOCUMENTS \nwhere DOC_ORG = '{{ $json.output.ma_don_vi }}'\norder by DOC_CREATED desc"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          368,
+          480
+        ],
+        "id": "c1b22bf1-ca2e-491d-a6ca-bb2d17ad3752",
+        "name": "Microsoft SQL1",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all().map(i => i.json);\n\nlet donVi = \"\";\nlet soTaiLieu = 0;\nlet taiLieu = [];\n\nfor (const item of items) {\n\n  // record tổng\n  if (item.so_tai_lieu && !item.ma_tai_lieu) {\n    soTaiLieu = item.so_tai_lieu;\n  }\n\n  // đơn vị\n  if (item.don_vi !== undefined) {\n    donVi = item.don_vi;\n  }\n\n  // danh sách tài liệu\n  if (item.ma_tai_lieu) {\n    taiLieu.push(item);\n  }\n}\n\n// nếu đơn vị là * thì đổi thành chung\nif (donVi === \"*\") {\n  donVi = \"chung\";\n}\n\nlet answer = `- **Đơn vị:** ${donVi}\\n\\n`;\nanswer += `+ Số tài liệu: ${soTaiLieu}\\n`;\n\n// suggestions\nlet suggestions = [];\n\ntaiLieu.slice(0,2).forEach(tl => {\n  suggestions.push(`Xem tài liệu ${tl.ten_tai_lieu}`);\n});\n\nreturn [\n{\n  json: {\n    output: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n}\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          480
+        ],
+        "id": "7a103783-1fd8-4815-8a3e-fe8acc361dbe",
+        "name": "Code",
+        "retryOnFail": true,
+        "waitBetweenTries": 10
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all().map(i => i.json);\n\nlet answer = \"\";\n\nitems.forEach(item => {\n  const link = `https://cmms.vimico.vn/${item.duong_dan}`;\n  answer += `Xem chi tiết tài liệu tại đường dẫn này: ${link}\\n`;\n});\n\nreturn [\n{\n  json: {\n    output: {\n      answer: answer.trim(),\n      suggestions: []\n    }\n  }\n}\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          864
+        ],
+        "id": "b5930b04-078a-45bb-80ff-365c70be3ef1",
+        "name": "Code1",
+        "retryOnFail": false,
+        "waitBetweenTries": 10,
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "571e2b2e-c607-4154-9136-e21fbd519067"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "tổng quan"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "33968b41-5b67-43da-8702-01c91ad1f55b",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "số tl của đơn vị"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "0d7e10c2-2ca8-4de3-aaec-5ee11479b3a8",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "chi tiết"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -432,
+          464
+        ],
+        "id": "8a333b63-0eb1-46bb-88c4-b5a083f4cbae",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -816,
+          880
+        ],
+        "id": "d9a8573b-73fb-417c-9db4-558cb83159ad",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          32,
+          704
+        ],
+        "id": "2e57686a-4f42-4e4c-b9c0-4a73c59b7aee",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -64,
+          1056
+        ],
+        "id": "2ba8188b-3606-4231-afb5-d792ac2f7f28",
+        "name": "OpenAI Chat Model2",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Microsoft SQL (Lấy thông tin công việc toàn đơn vị)13": {
+        "main": [
+          [
+            {
+              "node": "Code18",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "AI Agent26",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent26",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser2": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent1": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent26": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL (Lấy thông tin công việc toàn đơn vị)13",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent26",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "V Cat",
+    "name": "Version 020bb2fa",
+    "description": "",
+    "autosaved": true
+  },
   "tags": []
 }
