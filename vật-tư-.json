@@ -3,7 +3,7 @@
   "createdAt": "2026-03-17T11:04:24.258Z",
   "id": "nKo1iHpmJKgs89ki",
   "name": "Vật tư",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -3012,7 +3012,7 @@
     ]
   },
   "versionId": "3097d958-74f9-46ec-9666-ae1e6c36df0c",
-  "activeVersionId": null,
+  "activeVersionId": "3097d958-74f9-46ec-9666-ae1e6c36df0c",
   "triggerCount": 0,
   "shared": [
     {
@@ -3023,6 +3023,3003 @@
       "projectId": "IQyuKtxIScgEzusN"
     }
   ],
-  "activeVersion": null,
+  "activeVersion": {
+    "updatedAt": "2026-03-18T07:54:34.000Z",
+    "createdAt": "2026-03-17T14:45:59.471Z",
+    "versionId": "3097d958-74f9-46ec-9666-ae1e6c36df0c",
+    "workflowId": "nKo1iHpmJKgs89ki",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "ChatInput"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -2832,
+          2976
+        ],
+        "id": "105de193-4f97-4915-bac6-306d838cc1df",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent chuyên phân loại câu hỏi nghiệp vụ quản lý vật tư.\n\nNhiệm vụ:\n- Đọc câu hỏi của người dùng từ biến: {{ $json.ChatInput }}\n- Phân loại câu hỏi vào đúng 1 trong 5 nhóm nghiệp vụ\n- Trả về đúng JSON format\n\nĐịnh dạng output bắt buộc:\n{\n  \"query\": \"{{ $json.ChatInput }}\",\n  \"case\": \"<1|2|3|4|5>\"\n}\n\nQuy ước case:\n\n1 = Vật tư\n- tổng số vật tư trên hệ thống\n- thông tin chi tiết vật tư\n- tồn kho của vật tư\n\n2 = Yêu cầu vật tư\n- nhu cầu / yêu cầu vật tư\n- yêu cầu vật tư theo ngày tháng năm\n- chi phí sử dụng vật tư\n- yêu cầu vật tư đã duyệt / chưa duyệt\n\n3 = Thu hồi vật tư\n- tổng quan thu hồi vật tư\n- thu hồi vật tư của đơn vị MDV / LDV\n- vật tư được thu hồi theo khoảng thời gian\n\n4 = Dự toán vật tư\n- tổng quan dự toán vật tư\n- phiếu dự toán đã duyệt / chưa duyệt\n- phiếu dự toán theo ngày tháng năm\n- chi tiết vật tư trong một phiếu dự toán\n\n5 = Lịch sử giao dịch\n- lịch sử giao dịch của đơn vị MDV / LDV\n- lịch sử giao dịch vật tư của kho\n- lịch sử giao dịch của một mã hoặc tên vật tư\n\nQuy tắc phân loại:\n- Nếu câu hỏi có từ khóa:\n  - \"tồn kho\", \"thông tin vật tư\", \"bao nhiêu vật tư\" → case = 1\n  - \"yêu cầu vật tư\", \"nhu cầu\", \"đã duyệt\", \"chưa duyệt\", \"chi phí sử dụng\" → case = 2\n  - \"thu hồi\", \"vật tư thu hồi\", \"đơn vị thu hồi\" → case = 3\n  - \"dự toán\", \"phiếu dự toán\" → case = 4\n  - \"lịch sử giao dịch\", \"giao dịch kho\", \"giao dịch vật tư\" → case = 5\n\n- Nếu không xác định rõ → mặc định case = 1\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -2624,
+          2976
+        ],
+        "id": "965ce23c-8c3a-4711-b7c8-da464132199f",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -2416,
+          3152
+        ],
+        "id": "add70f61-3e64-4c3b-9553-3f27dd6f67c8",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "70fb78be-4faa-4807-83d7-198755a3225b"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Tổng quan"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "3923734b-b55a-48ba-a3a9-bfc6eccfdbec",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Yêu cầu vật tư"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "dc1350cd-073c-48e6-a951-88db089d0791",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Thu hồi vật tư"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a23bc748-5969-4945-8820-48e5f9474dff",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "4",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Dự toán vật tư"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "cef81fc9-b88f-46ad-924c-16d6e0ddd227",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "5",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Lịch sử giao dịch"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -1984,
+          2928
+        ],
+        "id": "3abf3517-4021-4f6f-ad92-c4a5d779b798",
+        "name": "Switch"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent phân loại câu hỏi vật tư.\n\nInput: {{ $json.output.query }}\n\nPhân loại thành 1 trong 3 case:\n1 = Tổng quan vật tư\n- tổng số vật tư\n- danh sách vật tư\n- thống kê / tổng quan vật tư\n\n2 = Thông tin chi tiết của 1 vật tư\n- thông tin / chi tiết / mô tả của 1 mã hoặc tên vật tư\n\n3 = Tồn kho của 1 vật tư\n- tồn kho\n- còn bao nhiêu\n- số lượng tồn của 1 vật tư\n\nLuật:\n- hỏi tổng quan / danh sách / thống kê => 1\n- hỏi chi tiết 1 vật tư => 2\n- hỏi tồn kho / số lượng còn => 3\n- không rõ thì mặc định 1\n- chỉ trả về JSON hợp lệ theo mẫu:\n\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"case\": \"1\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -1040,
+          336
+        ],
+        "id": "ff34417e-5055-455f-b950-ef1751c269dc",
+        "name": "AI Agent1"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -832,
+          528
+        ],
+        "id": "45f016ba-1990-422f-80ea-e18e1763e8be",
+        "name": "Structured Output Parser1"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "cab44ece-cb92-4931-a316-73625e5ec217"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Tổng quan"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "1308c03f-f1ab-43b4-9c91-d27fbc549670",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Chi tiết 1 vt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "52062243-7006-47d1-86f4-545f38aff6c7",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "số lượng tồn kho"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -496,
+          320
+        ],
+        "id": "290a0926-863f-4e53-ae47-7a7f625ea990",
+        "name": "Switch1"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "select count(*) as SOLUONGVATTU from R5PARTS\nSelect top 2 \nPAr_code as MAVATTU,\nPAR_DESC as MOTA\nfrom R5PARTS where par_code <> '*'"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "44214900-fd3b-4d21-bfd2-3c48de8d942d",
+        "name": "Microsoft SQL",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst SOLUONGVATTU = items[0].json.SOLUONGVATTU;\nconst MAVATTU = items[1]?.json?.MAVATTU;\nconst MOTA = items[2]?.json?.MOTA;\nconst mota2 = items[1]?.json?.MOTA;\nconst MAVATTU2 = items[2]?.json?.MAVATTU;\n\nconst answer = `Số lượng vật tư của đơn vị là ${SOLUONGVATTU}.`;\n\nconst suggestions = [\n  `Số lượng tồn kho của vật tư ${MAVATTU}`,\n  `Số lượng tồn kho của vật tư ${MOTA}`,\n  `Xem chi tiết vật tư có mã ${MAVATTU2}`,\n  `Xem chi tiết vật tư ${mota2}`\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          208,
+          0
+        ],
+        "id": "2873559a-d9fe-4ca6-ab23-5e88f7a20ddb",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @MAVATTU NVARCHAR(50) = '{{ $json.output.MAVATTU }}';\nDECLARE @MOTA NVARCHAR(255) = '{{ $json.output.MOTA }}';\nDECLARE @MVT NVARCHAR(50);\n\n-- lấy mã vật tư\nSELECT TOP 1\n    @MVT = PAR_CODE\nFROM R5PARTS\nWHERE \n    (@MAVATTU <> '' AND PAR_CODE = @MAVATTU)\n    OR\n    (@MOTA <> '' AND PAR_DESC LIKE '%' + @MOTA + '%');\n\n-- thông tin vật tư\nSELECT\n    PAR_CODE as MAVATTU,\n    PAR_DESC as MOTA,\n    PAR_CLASS as PHANLOAI,\n    PAR_CATEGORY AS PHANNHOM,\n    PAR_UOM AS DONVITINH\nFROM R5PARTS\nWHERE PAR_CODE = @MVT;\n\n-- lịch sử giao dịch\nSELECT TOP 3\n    t.TRL_STORE as KHO,\n    s.str_desc as TENKHO,\n    t.trl_qty as SOLUONG,\n    t.TRL_price as DONGIA,\n    t.trl_trans as MAGIAODICH,\n    TRL_DATE as NGAY\nFROM r5translines as t\nLEFT JOIN R5STORES as s\n    ON t.TRL_STORE = s.str_code\nWHERE TRL_PART = @MVT\nORDER BY TRL_DATE DESC;\n\n\nselect \nsto_store as KHO,\nSTO_QTY as SOLUONGTON\nfrom r5stock where sto_part = @MVT"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          560,
+          240
+        ],
+        "id": "33e359b1-5c7b-4e70-b2aa-4b133a4f0219",
+        "name": "Microsoft SQL1",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent chuyên trích xuất thông tin vật tư từ câu hỏi của người dùng.\nđây là câu iput của người dùng \n{{ $json.output.query }}\n\nNhiệm vụ của bạn:\n- Đọc câu hỏi từ người dùng\n- Xác định xem người dùng đang hỏi theo:\n  - Mã vật tư (MAVATTU)\n  - Tên / mô tả vật tư (MOTA)\n\nSau đó trả về JSON đúng định dạng sau:\n\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"\"\n}\n\nQuy tắc:\n\n1. Nếu câu hỏi chứa mã vật tư (ví dụ: VT001, 015.0001, 104.0001)  \n→ điền vào MAVATTU và để MOTA = \"\"\n\n2. Nếu câu hỏi chứa tên hoặc mô tả vật tư  \n→ điền vào MOTA và để MAVATTU = \"\"\n\n3. Nếu câu hỏi chứa cả mã và tên vật tư  \n→ ưu tiên MAVATTU\n\n4. Không giải thích  \n5. Chỉ trả về JSON hợp lệ\n\nVí dụ:\n\nInput:\nThông tin vật tư 015.0001\n\nOutput:\n{\n  \"MAVATTU\": \"015.0001\",\n  \"MOTA\": \"\"\n}\n\nInput:\nCho tôi xem thông tin vật tư Cân đĩa 5kg\n\nOutput:\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"Cân đĩa 5kg\"\n}\n\nInput:\nThông tin vật tư Phốt buồng rung xe lu rung 13V028\n\nOutput:\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"Phốt buồng rung xe lu rung 13V028\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          48,
+          240
+        ],
+        "id": "4b1e2faf-6e33-4e13-8bd7-660f6b284e32",
+        "name": "AI Agent2"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"MAVATTU\": \"\",\n    \"MOTA\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          208,
+          400
+        ],
+        "id": "23035c7c-cf73-474e-849e-865b1ef70ab2",
+        "name": "Structured Output Parser2"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst part = items.find(i => i.json.MAVATTU);\nconst transactions = items.filter(i => i.json.NGAY);\nconst stocks = items.filter(i => i.json.SOLUONGTON !== undefined);\n\nconst p = part.json;\n\n// ===== xử lý thời gian =====\nconst now = new Date();\nconst month = now.getMonth() + 1;\nconst year = now.getFullYear();\n\nconst yesterday = new Date();\nyesterday.setDate(now.getDate() - 1);\n\nconst yesterdayStr = yesterday.toLocaleDateString(\"vi-VN\");\n\n// ===========================\n\nlet answer = `Thông tin vật tư:\\n`;\nanswer += `Mã vật tư: ${p.MAVATTU}\\n`;\nanswer += `Mô tả: ${p.MOTA}\\n`;\nanswer += `Đơn vị tính: ${p.DONVITINH}\\n`;\n\nif (p.PHANLOAI) answer += `Phân loại: ${p.PHANLOAI}\\n`;\nif (p.PHANNHOM) answer += `Phân nhóm: ${p.PHANNHOM}\\n`;\n\nanswer += `\\nMột số giao dịch gần đây:\\n`;\n\ntransactions.forEach(t => {\n  const d = new Date(t.json.NGAY).toLocaleDateString(\"vi-VN\");\n  answer += `- ${d} | Kho: ${t.json.TENKHO} | SL: ${t.json.SOLUONG} | GD: ${t.json.MAGIAODICH}\\n`;\n});\n\nanswer += `\\nTồn kho của vật tư tại các kho:\\n`;\n\nstocks.forEach(s => {\n  answer += `- Kho ${s.json.KHO}: ${s.json.SOLUONGTON}\\n`;\n});\n\n// ===== suggestions =====\nconst suggestions = [\n  `Các yêu cầu vật tư trong tháng ${month}/${year}`,\n  `Các dự toán vật tư trong tháng ${month}/${year}`,\n  `Các giao dịch vật tư ngày ${yesterdayStr}`\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          768,
+          240
+        ],
+        "id": "ad99857d-8b47-4814-a3f5-d5f0fd361e54",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent chuyên phân loại câu hỏi theo điều kiện có nhắc đến kho hay không.\n\n- Đây là input của người dùng\n{{ $json.output.query }}\nNhiệm vụ:\n- Đọc câu hỏi của người dùng\n- Xác định câu hỏi có chứa thông tin về \"kho\" hay không\n- Trả về đúng JSON theo format yêu cầu\n\nĐịnh dạng output bắt buộc:\n{\n  \"query\": \"<giữ nguyên câu hỏi người dùng>\",\n  \"case\": \"<1|2>\"\n}\n\nQuy ước:\n- case = 1: câu hỏi không có kho\n- case = 2: câu hỏi có kho\n\nQuy tắc phân loại:\n1. Nếu trong câu hỏi có nhắc đến \"kho\" hoặc tên kho hoặc mã kho thì trả về case = 2\n2. Nếu trong câu hỏi không nhắc đến kho thì trả về case = 1\n3. Từ \"kho\" có thể xuất hiện ở các dạng như:\n   - kho\n   - tại kho\n   - trong kho\n   - kho trung tâm\n   - kho vật liệu nổ\n   - mã kho\n   - tên kho\n4. Chỉ cần câu hỏi có ý nói đến kho, dù viết hoa hay viết thường, cũng phân loại là case = 2\n5. Nếu không chắc chắn, mặc định trả về case = 1\n6. Không giải thích\n7. Chỉ trả về JSON hợp lệ\n\nVí dụ:\n\nInput:\nTồn kho của vật tư 015.0001\nOutput:\n{\n  \"query\": \"Tồn kho của vật tư 015.0001\",\n  \"case\": \"1\"\n}\n\nInput:\nTồn kho của vật tư 015.0001 tại kho 120.012\nOutput:\n{\n  \"query\": \"Tồn kho của vật tư 015.0001 tại kho 120.012\",\n  \"case\": \"2\"\n}\n\nInput:\nLịch sử giao dịch vật tư ở kho trung tâm\nOutput:\n{\n  \"query\": \"Lịch sử giao dịch vật tư ở kho trung tâm\",\n  \"case\": \"2\"\n}\n\nBây giờ hãy phân loại câu hỏi người dùng.",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          16,
+          704
+        ],
+        "id": "7176daa9-0626-417d-b5c0-e4428fa38ed6",
+        "name": "AI Agent3"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n    \"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          208,
+          880
+        ],
+        "id": "713b452f-0746-4374-a99f-7cad15ca9115",
+        "name": "Structured Output Parser3"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @MAVATTU NVARCHAR(50) = '{{ $json.output.MAVATTU }}';\nDECLARE @MOTA NVARCHAR(255) = '{{ $json.output.MOTA }}';\nDECLARE @MVT NVARCHAR(50);\n\n-- lấy mã vật tư\nSELECT TOP 1\n    @MVT = PAR_CODE\nFROM R5PARTS\nWHERE\n    (@MAVATTU <> '' AND PAR_CODE = @MAVATTU)\n    OR\n    (@MOTA <> '' AND PAR_DESC LIKE '%' + @MOTA + '%');\n\n-- thông tin vật tư\nSELECT\n    PAR_CODE AS MAVATTU,\n    PAR_DESC AS TENVATTU\nFROM R5PARTS\nWHERE PAR_CODE = @MVT;\n\n-- tồn kho theo kho\nSELECT\n    STO_STORE AS KHO,\n    STO_QTY AS SOLUONGTON\nFROM R5STOCK\nWHERE STO_PART = @MVT\nAND STO_QTY IS NOT NULL\nORDER BY STO_STORE;"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          1360,
+          400
+        ],
+        "id": "7be8e8d0-df98-433c-8f89-b2ca16133440",
+        "name": "Microsoft SQL2",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "6b3e52ac-6d85-4f20-b92b-cab186208518"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "ko kho"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "86e72d26-3645-47e9-b56b-183f0c90487a",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "có kho"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          368,
+          704
+        ],
+        "id": "4517c038-f3e7-449d-9158-8516960d5cef",
+        "name": "Switch2"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent chuyên trích xuất thông tin vật tư từ câu hỏi của người dùng.\nđây là câu iput của người dùng \n{{ $json.output.query }}\n\nNhiệm vụ của bạn:\n- Đọc câu hỏi từ người dùng\n- Xác định xem người dùng đang hỏi theo:\n  - Mã vật tư (MAVATTU)\n  - Tên / mô tả vật tư (MOTA)\n\nSau đó trả về JSON đúng định dạng sau:\n\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"\"\n}\n\nQuy tắc:\n\n1. Nếu câu hỏi chứa mã vật tư (ví dụ: VT001, 015.0001, 104.0001)  \n→ điền vào MAVATTU và để MOTA = \"\"\n\n2. Nếu câu hỏi chứa tên hoặc mô tả vật tư  \n→ điền vào MOTA và để MAVATTU = \"\"\n\n3. Nếu câu hỏi chứa cả mã và tên vật tư  \n→ ưu tiên MAVATTU\n\n4. Không giải thích  \n5. Chỉ trả về JSON hợp lệ\n\nVí dụ:\n\nInput:\nThông tin vật tư 015.0001\n\nOutput:\n{\n  \"MAVATTU\": \"015.0001\",\n  \"MOTA\": \"\"\n}\n\nInput:\nCho tôi xem thông tin vật tư Cân đĩa 5kg\n\nOutput:\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"Cân đĩa 5kg\"\n}\n\nInput:\nThông tin vật tư Phốt buồng rung xe lu rung 13V028\n\nOutput:\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"Phốt buồng rung xe lu rung 13V028\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          848,
+          400
+        ],
+        "id": "e4a58030-5738-43d3-a534-d70eebd61db7",
+        "name": "AI Agent4"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"MAVATTU\": \"\",\n    \"MOTA\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          1024,
+          592
+        ],
+        "id": "9dae83b9-ef10-44b7-83f7-7304bcd66872",
+        "name": "Structured Output Parser5"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst part = items.find(i => i.json.MAVATTU);\nconst transactions = items.filter(i => i.json.NGAY);\nconst stocks = items.filter(i => i.json.SOLUONGTON !== undefined);\n\nconst p = part.json;\n\n// ===== xử lý thời gian =====\nconst now = new Date();\nconst month = now.getMonth() + 1;\nconst year = now.getFullYear();\n\nconst yesterday = new Date();\nyesterday.setDate(now.getDate() - 1);\n\nconst yesterdayStr = yesterday.toLocaleDateString(\"vi-VN\");\n\n// ===========================\n\nlet answer = `Thông tin vật tư:\\n`;\nanswer += `Mã vật tư: ${p.MAVATTU}\\n`;\nanswer += `Mô tả: ${p.MOTA}\\n`;\nanswer += `Đơn vị tính: ${p.DONVITINH}\\n`;\n\nif (p.PHANLOAI) answer += `Phân loại: ${p.PHANLOAI}\\n`;\nif (p.PHANNHOM) answer += `Phân nhóm: ${p.PHANNHOM}\\n`;\n\nanswer += `\\nMột số giao dịch gần đây:\\n`;\n\ntransactions.forEach(t => {\n  const d = new Date(t.json.NGAY).toLocaleDateString(\"vi-VN\");\n  answer += `- ${d} | Kho: ${t.json.TENKHO} | SL: ${t.json.SOLUONG} | GD: ${t.json.MAGIAODICH}\\n`;\n});\n\nanswer += `\\nTồn kho của vật tư tại các kho:\\n`;\n\nstocks.forEach(s => {\n  answer += `- Kho ${s.json.KHO}: ${s.json.SOLUONGTON}\\n`;\n});\n\n// ===== suggestions =====\nconst suggestions = [\n  `Lịch sử giao dịch vật tư ${p.MAVATTU}`,\n  `Các dự toán vật tư trong tháng ${month}/${year}`,\n  `Các giao dịch vật tư ngày ${yesterdayStr}`\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1568,
+          400
+        ],
+        "id": "d8e51c31-d16d-4cd0-a55c-077b33a6d961",
+        "name": "Code2"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent trích xuất thông tin vật tư và kho từ câu hỏi người dùng.\n\nInput:\n{{ $json.output.query }}\n\nTrả về đúng JSON:\n{\n  \"MAVATTU\": \"\",\n  \"MOTA\": \"\",\n  \"MAKHO\": \"\",\n  \"TENKHO\": \"\"\n}\n\nLuật:\n- Nếu có mã vật tư thì điền vào MAVATTU, MOTA để \"\"\n- Nếu có tên vật tư thì điền vào MOTA, MAVATTU để \"\"\n- Nếu có cả mã và tên vật tư thì ưu tiên MAVATTU\n- Nếu có mã kho thì điền vào MAKHO, TENKHO để \"\"\n- Nếu có tên kho thì điền vào TENKHO, MAKHO để \"\"\n- Nếu có cả mã và tên kho thì ưu tiên MAKHO\n- Nếu không có thì để chuỗi rỗng\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          864,
+          816
+        ],
+        "id": "1276ed75-77a4-45ea-86d4-0895f6065ab6",
+        "name": "AI Agent5"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"MAVATTU\": \"\",\n    \"MOTA\": \"\",\n    \"MAKHO\": \"\",\n    \"TENKHO\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          1072,
+          1008
+        ],
+        "id": "dcc8d08e-ebef-4dde-8866-d7ce77cd57f7",
+        "name": "Structured Output Parser6"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @MAVATTU NVARCHAR(50) = '{{ $json.output.MAVATTU }}';\nDECLARE @MOTA NVARCHAR(255) = '{{ $json.output.MOTA }}';\nDECLARE @MAKHO NVARCHAR(50) = '{{ $json.output.MAKHO }}';\nDECLARE @TENKHO NVARCHAR(255) = '{{ $json.output.TENKHO }}';\nDECLARE @MVT NVARCHAR(50);\n\n-- lấy mã vật tư\nSELECT TOP 1\n    @MVT = PAR_CODE\nFROM R5PARTS\nWHERE\n    (@MAVATTU <> '' AND PAR_CODE = @MAVATTU)\n    OR\n    (@MOTA <> '' AND PAR_DESC LIKE '%' + @MOTA + '%');\n\n-- thông tin vật tư\nSELECT\n    PAR_CODE AS MAVATTU,\n    PAR_DESC AS TENVATTU\nFROM R5PARTS\nWHERE PAR_CODE = @MVT;\n\n-- tồn kho theo kho\nSELECT\n    STO_STORE AS KHO,\n    STO_QTY AS SOLUONGTON\nFROM R5STOCK\nWHERE \n    STO_PART = @MVT\n    AND STO_QTY IS NOT NULL\n    AND (\n        (@MAKHO <> '' AND STO_STORE = @MAKHO)\n        OR\n        (@MAKHO = '' )\n    )\nORDER BY STO_STORE;"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          1344,
+          816
+        ],
+        "id": "ced8508d-4118-4995-88ea-d63d90a5aa7e",
+        "name": "Microsoft SQL3",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nconst part = items.find(i => i.json.MAVATTU);\nconst transactions = items.filter(i => i.json.NGAY);\nconst stocks = items.filter(i => i.json.SOLUONGTON !== undefined);\n\nconst p = part.json;\n\n// ===== xử lý thời gian =====\nconst now = new Date();\nconst month = now.getMonth() + 1;\nconst year = now.getFullYear();\n\nconst yesterday = new Date();\nyesterday.setDate(now.getDate() - 1);\n\nconst yesterdayStr = yesterday.toLocaleDateString(\"vi-VN\");\n\n// ===========================\n\nlet answer = `Thông tin vật tư:\\n`;\nanswer += `Mã vật tư: ${p.MAVATTU}\\n`;\nanswer += `Mô tả: ${p.TENVATTU}\\n`;\nanswer += `Đơn vị tính: ${p.DONVITINH}\\n`;\n\nif (p.PHANLOAI) answer += `Phân loại: ${p.PHANLOAI}\\n`;\nif (p.PHANNHOM) answer += `Phân nhóm: ${p.PHANNHOM}\\n`;\n\nanswer += `\\nMột số giao dịch gần đây:\\n`;\n\ntransactions.forEach(t => {\n  const d = new Date(t.json.NGAY).toLocaleDateString(\"vi-VN\");\n  answer += `- ${d} | Kho: ${t.json.TENKHO} | SL: ${t.json.SOLUONG} | GD: ${t.json.MAGIAODICH}\\n`;\n});\n\nanswer += `\\nTồn kho của vật tư tại các kho:\\n`;\n\nstocks.forEach(s => {\n  answer += `- Kho ${s.json.KHO}: ${s.json.SOLUONGTON}\\n`;\n});\n\n// ===== suggestions =====\nconst suggestions = [\n  `Lịch sử giao dịch vật tư ${p.MAVATTU}`,\n  `Các dự toán vật tư trong tháng ${month}/${year}`,\n  `Các giao dịch vật tư ngày ${yesterdayStr}`,\n  `Các yêu cầu vật tư trong tháng ${month}/${year}`,\n  `Các thu hồi vật tư trong tháng ${month}/${year}`,\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1600,
+          816
+        ],
+        "id": "ed758bd3-5b2c-4a73-9637-9caef49f9b57",
+        "name": "Code3"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent phân loại câu hỏi về yêu cầu vật tư.\n\nInput:\n{{ $json.output.query }}\n\nNhiệm vụ:\nĐọc câu hỏi và phân loại vào 1 trong 3 case sau.\n\nCase:\n1 = Các yêu cầu vật tư theo khoảng thời gian (có nhắc đến ngày, tháng, năm, từ ngày đến ngày, hôm nay, hôm qua, tháng này, năm nay…)\n2 = Các yêu cầu vật tư theo trạng thái duyệt (đã duyệt, chưa duyệt, đang chờ duyệt…)\n3 = Chi tiết 1 phiếu yêu cầu / phiếu nhu cầu vật tư (có mã phiếu hoặc hỏi chi tiết một phiếu cụ thể)\n\nOutput chỉ trả về JSON:\n\n{\n  \"query\": \"\",\n  \"case\": \"\"\n}\n\nLuật:\n- Nếu câu hỏi có nhắc đến thời gian → case = 1\n- Nếu câu hỏi có nhắc đến trạng thái duyệt → case = 2\n- Nếu câu hỏi hỏi chi tiết 1 phiếu cụ thể → case = 3\n- Nếu không xác định rõ → mặc định case = 1\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -896,
+          1856
+        ],
+        "id": "ff5dfaed-b210-40cc-874e-4965abc37807",
+        "name": "AI Agent6"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -720,
+          2048
+        ],
+        "id": "68c72b82-fefb-4374-b518-991a25735e20",
+        "name": "Structured Output Parser4"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "9caee752-9868-4857-b729-d4718edacb44"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "thời gian"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a49fb6b3-9efd-4906-b362-fcc6c9d1a9f3",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "trạng thái"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "e40ae410-27b6-4819-9857-a200135a50d7",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "chi tiết 1 phiếu"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -368,
+          1840
+        ],
+        "id": "e38a49a4-fac6-43e2-a79c-4085237ed6da",
+        "name": "Switch3"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent trích xuất điều kiện thời gian cho nhu cầu vật tư từ câu hỏi người dùng.\n\nInput:\n{{ $json.output.query }}\n\nNhiệm vụ:\n- Đọc câu hỏi người dùng\n- Xác định người dùng đang tìm theo tháng, quý, kỳ, năm\n- Trả về đúng JSON theo định dạng:\n\n{\n  \"THANG\": \"\",\n  \"QUY\": \"\",\n  \"KY\": \"\",\n  \"NAM\": \"\"\n}\n\nLuật:\n- Nếu câu hỏi có tháng thì điền THANG\n- Nếu câu hỏi có quý thì điền QUY\n- Nếu câu hỏi có kỳ thì điền KY\n- Nếu câu hỏi có năm thì điền NAM\n- Nếu không có thì để chuỗi rỗng\n- Chỉ lấy giá trị người dùng nhắc đến, không tự suy diễn thêm\n- Không giải thích\n- Chỉ trả về JSON hợp lệ\n\nVí dụ:\n\nInput: nhu cầu vật tư tháng 3 năm 2025\nOutput:\n{\n  \"THANG\": \"3\",\n  \"QUY\": \"\",\n  \"KY\": \"\",\n  \"NAM\": \"2025\"\n}\n\nInput: nhu cầu vật tư quý 2 năm 2024\nOutput:\n{\n  \"THANG\": \"\",\n  \"QUY\": \"2\",\n  \"KY\": \"\",\n  \"NAM\": \"2024\"\n}\n\nInput: nhu cầu vật tư kỳ K1 năm 2025\nOutput:\n{\n  \"THANG\": \"\",\n  \"QUY\": \"\",\n  \"KY\": \"K1\",\n  \"NAM\": \"2025\"\n}\n\nInput: nhu cầu vật tư năm 2025\nOutput:\n{\n  \"THANG\": \"\",\n  \"QUY\": \"\",\n  \"KY\": \"\",\n  \"NAM\": \"2025\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          48,
+          1056
+        ],
+        "id": "985b6971-5a89-4e33-b8a1-cb9f0cf508a9",
+        "name": "AI Agent7"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"THANG\": \"\",\n  \"QUY\": \"\",\n  \"KY\": \"\",\n  \"NAM\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          272,
+          1232
+        ],
+        "id": "59d6998a-c97d-4aae-9453-8cbff882cb1f",
+        "name": "Structured Output Parser7"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @THANG NVARCHAR(10) = '{{ $json.output.THANG }}';\nDECLARE @QUY NVARCHAR(10) = '{{ $json.output.QUY }}';\nDECLARE @KY NVARCHAR(50) = '{{ $json.output.KY }}';\nDECLARE @NAM NVARCHAR(10) = '{{ $json.output.NAM }}';\n\nSELECT top 5\n    PIC_Code as MAYEUCAU,\n    PIC_Desc as MOTA,\n    PIC_UDFNUM01 AS THANG,\n    PIC_UDFNUM02 AS QUY,\n    PIC_UDFCHAR08 AS KY,\n    PIC_UDFNUM03 AS NAM\nFROM R5PICKLISTS\nWHERE\n    (@THANG = '' OR PIC_UDFNUM01 = TRY_CAST(@THANG AS INT))\nAND (@QUY = '' OR PIC_UDFNUM02 = TRY_CAST(@QUY AS INT))\nAND (@KY = '' OR PIC_UDFCHAR08 = @KY)\nAND (@NAM = '' OR PIC_UDFNUM03 = TRY_CAST(@NAM AS INT));"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          1056
+        ],
+        "id": "4d8320bc-2790-4eb8-ad38-ea4eedba8ba8",
+        "name": "Microsoft SQL4",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nlet answer = `Các phiếu nhu cầu vật tư:\\n\\n`;\n\nitems.forEach((i, index) => {\n  const p = i.json;\n  answer += `${index + 1}. Phiếu: ${p.MAYEUCAU}\\n`;\n  answer += `   Mô tả: ${p.MOTA}\\n`;\n  answer += `   Thời gian: Quý ${p.QUY} - Năm ${p.NAM}\\n\\n`;\n});\n\n// suggestions theo từng phiếu\nconst suggestions = items.map(i =>\n  `Xem chi tiết phiếu yêu cầu vật tư ${i.json.MAYEUCAU}`\n);\n\n// thêm các gợi ý chung\nsuggestions.push(\n  \"Các yêu cầu vật tư chưa được duyệt\",\n  \"Các yêu cầu vật tư đã duyệt\"\n);\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          1056
+        ],
+        "id": "214c132e-7152-4937-8938-831b210cb2f1",
+        "name": "Code4"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "select top 5\nPIC_CODE as MACONGVIEC,\nPIC_DESC as MOTA,\nPIC_STORE as PHANXUONG,\nPIC_OBJECT as DONVI\nfrom R5PICKLISTS where PIC_STATUS = '{{ $json.output.value }}'"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          928,
+          1456
+        ],
+        "id": "98be765d-18ad-40a1-a13f-9a056be1fd07",
+        "name": "Microsoft SQL5",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent trích xuất trạng thái yêu cầu vật tư từ câu hỏi người dùng.\n\nInput:\n{{ $json.output.query }}\n\nNhiệm vụ:\n- Đọc câu hỏi người dùng\n- Xác định người dùng đang hỏi trạng thái nào của yêu cầu vật tư\n- Trả về đúng value tương ứng để dùng cho query\n\nDanh sách trạng thái:\n- \"CĐ đã duyệt\" → \"A1\"\n- \"Chờ KHVT duyệt\" → \"R1\"\n- \"Chờ Lãnh đạo duyệt\" → \"R2\"\n- \"Đang thực hiện\" → \"U\"\n\nOutput chỉ trả về JSON:\n{\n  \"value\": \"\"\n}\n\nLuật:\n- Nếu câu hỏi nói đến \"đã duyệt\", \"được duyệt\", \"đã phê duyệt\" → value = \"A1\"\n- Nếu câu hỏi nói đến \"chưa duyệt\", \"chờ duyệt\", \"chờ KHVT duyệt\", \"KHVT chưa duyệt\" → value = \"R1\"\n- Nếu câu hỏi nói đến \"chờ lãnh đạo duyệt\", \"lãnh đạo chưa duyệt\", \"đợi sếp duyệt\" → value = \"R2\"\n- Nếu câu hỏi nói đến \"đang thực hiện\", \"đang xử lý\", \"đang triển khai\" → value = \"U\"\n- Nếu có nhiều cách hiểu, chọn trạng thái khớp nghĩa nhất với câu hỏi\n- Nếu không xác định rõ, mặc định value = \"R1\"\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          544,
+          1456
+        ],
+        "id": "96deed8c-10f6-4a98-9afe-a4eab032c41b",
+        "name": "AI Agent9"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"value\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          736,
+          1632
+        ],
+        "id": "3c682fa4-7f2b-4ed7-97fe-a4cdba253603",
+        "name": "Structured Output Parser9"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nlet answer = `Dưới đây là các phiếu nhu cầu vật tư:\\n\\n`;\nanswer += `| Mã công việc | Mô tả | Phân xưởng | Đơn vị |\\n`;\nanswer += `|--------------|-------|------------|--------|\\n`;\n\nitems.forEach(i => {\n  const p = i.json;\n  answer += `| ${p.MACONGVIEC} | ${p.MOTA} | ${p.PHANXUONG} | ${p.DONVI} |\\n`;\n});\n\n// suggestions xem chi tiết từng phiếu\nconst suggestions = items.map(i => \n  `Xem chi tiết phiếu nhu cầu vật tư ${i.json.MACONGVIEC}`\n);\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1136,
+          1456
+        ],
+        "id": "190aba0c-1d58-45c2-bee8-0de7c74d932f",
+        "name": "Code5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI Agent trích xuất mã nhu cầu vật tư từ câu hỏi người dùng.\n\nInput:\n{{ $json.output.query }}\n\nNhiệm vụ:\n- Đọc câu hỏi người dùng\n- Tìm mã nhu cầu vật tư trong câu hỏi\n- Mã nhu cầu vật tư thường là một chuỗi gồm **6 chữ số**\n\nOutput trả về đúng JSON:\n\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"MACONGVIEC\": \"\"\n}\n\nLuật:\n- Nếu tìm thấy chuỗi gồm đúng **6 chữ số** → đó là MACONGVIEC\n- Nếu có nhiều chuỗi 6 chữ số → lấy chuỗi đầu tiên\n- Nếu không tìm thấy → để MACONGVIEC = \"\"\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          560,
+          1920
+        ],
+        "id": "7d0bdc5a-cf6e-47bf-ab58-30cb911621ef",
+        "name": "AI Agent8"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"MACONGVIEC\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          736,
+          2128
+        ],
+        "id": "81a97b2e-a4dc-49d5-b7e8-c3c0a823ea70",
+        "name": "Structured Output Parser10"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @MACONGVIEC NVARCHAR(50) = '{{ $json.output.MACONGVIEC }}';\n\nSELECT\n    PIC_CODE as MAYEUCAU,\n    PIC_DESC as MOTA,\n    PIC_UDFNUM01 AS THANG,\n    PIC_UDFNUM02 AS QUY,\n    PIC_UDFCHAR08 AS KY,\n    PIC_UDFNUM03 AS NAM,\n    pic_status,\n    CASE PIC_STATUS\n        WHEN 'A1' THEN N'CĐ đã duyệt'\n        WHEN 'R1' THEN N'Chờ KHVT duyệt'\n        WHEN 'R2' THEN N'Chờ Lãnh đạo duyệt'\n        WHEN 'U'  THEN N'Đang thực hiện'\n        WHEN 'A'  THEN N'Chờ Lãnh đạo duyệt'\n        ELSE N'Không xác định'\n    END AS TRANGTHAI\n\nFROM R5PICKLISTS\nWHERE PIC_CODE = @MACONGVIEC;\n\nselect top 10 PART wspf_10_part,PART_DESC wspf_10_part_desc,UOM wspf_10_uom,PLAN_QTY wspf_10_plan_qty FROM U5CSVT WHERE CODE =@MACONGVIEC"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          1040,
+          1920
+        ],
+        "id": "74a01504-b26b-4576-9e7d-22715798bb7e",
+        "name": "Microsoft SQL6",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// item đầu là thông tin phiếu\nconst header = items.find(i => i.json.MAYEUCAU);\nconst materials = items.filter(i => i.json.wspf_10_part);\n\nconst h = header.json;\n\nlet answer = `Thông tin phiếu yêu cầu vật tư:\\n`;\nanswer += `Mã phiếu: ${h.MAYEUCAU}\\n`;\nanswer += `Mô tả: ${h.MOTA}\\n`;\nanswer += `Thời gian: ${h.QUY ? \"Quý \" + h.QUY : \"\"} ${h.NAM}\\n`;\nanswer += `Trạng thái: ${h.TRANGTHAI}\\n\\n`;\n\nanswer += `Danh sách vật tư trong phiếu:\\n\\n`;\nanswer += `| Mã vật tư | Mô tả | ĐVT | Số lượng |\\n`;\nanswer += `|-----------|-------|-----|----------|\\n`;\n\nmaterials.forEach(m => {\n  const p = m.json;\n  answer += `| ${p.wspf_10_part} | ${p.wspf_10_part_desc ?? \"\"} | ${p.wspf_10_uom ?? \"\"} | ${p.wspf_10_plan_qty} |\\n`;\n});\n\n// ===== TẠO SUGGESTIONS =====\nconst now = new Date();\n\nconst currentMonth = now.getMonth() + 1;\nconst currentYear = now.getFullYear();\n\nconst prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);\nconst prevMonth = prevDate.getMonth() + 1;\nconst prevYear = prevDate.getFullYear();\n\nconst formatMonth = (m) => m.toString().padStart(2, \"0\");\n\nconst suggestions = [\n  `Các phiếu thu hồi vật tư từ ngày 01/${formatMonth(currentMonth)}/${currentYear} đến ngày ${new Date(currentYear, currentMonth, 0).getDate()}/${formatMonth(currentMonth)}/${currentYear}`,\n  \n  `Các phiếu thu hồi vật tư từ ngày 01/${formatMonth(prevMonth)}/${prevYear} đến ngày ${new Date(prevYear, prevMonth, 0).getDate()}/${formatMonth(prevMonth)}/${prevYear}`,\n  \n  `Các phiếu thu hồi vật tư trong năm ${formatMonth(prevMonth)}/${currentYear}`\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1248,
+          1904
+        ],
+        "id": "acf9d85c-6cb9-4f28-a8b1-cc32a58e6603",
+        "name": "Code6"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI phân loại yêu cầu tra cứu phiếu thu hồi vật tư.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nPhân loại thành 1 trong 2 case:\n\nCase 1:\n- Người dùng hỏi danh sách các phiếu thu hồi vật tư theo thời gian.\n- Thường có các từ như:\n  - từ ngày ... đến ngày ...\n  - tháng .../...\n  - tháng này, tháng trước\n  - quý ...\n  - năm ...\n  - các phiếu, danh sách phiếu\n\nCase 2:\n- Người dùng hỏi chi tiết 1 phiếu thu hồi vật tư cụ thể.\n- Thường có mã phiếu gồm 6 chữ số.\n- Ví dụ: phiếu 123456, xem phiếu 123456.\n\nQuy tắc:\n- Nếu có mã phiếu 6 chữ số → case = 2\n- Nếu có thông tin thời gian → case = 1\n- Nếu có cả hai → ưu tiên case = 2\n\nChỉ trả JSON đúng format sau, không giải thích:\n\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"case\": \"1\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -880,
+          2544
+        ],
+        "id": "dc404c53-74e9-4080-b455-7113dd443ad5",
+        "name": "AI Agent10"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -720,
+          2752
+        ],
+        "id": "316f8326-5601-4a25-8dc6-68c48014b259",
+        "name": "Structured Output Parser8"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "5cf24d83-cfa9-4cce-af8a-e6148a15a523"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "thời gian"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c49c9cf2-3b72-4ece-b489-8463cdaac816",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "1 phiếu"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -528,
+          2544
+        ],
+        "id": "69983d5a-6e9d-4c39-b9c4-a1642e2c910c",
+        "name": "Switch4"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất khoảng thời gian từ câu hỏi của người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Xác định ngày bắt đầu (startdate) và ngày kết thúc (enddate) dựa trên câu hỏi.\n- Nếu câu có dạng \"từ ngày ... đến ngày ...\" thì lấy đúng 2 ngày đó.\n- Nếu câu có \"tháng MM/YYYY\" thì:\n  - startdate = ngày 01/MM/YYYY\n  - enddate = ngày cuối của tháng đó.\n- Nếu câu có \"tháng này\":\n  - startdate = ngày 01 của tháng hiện tại\n  - enddate = ngày cuối của tháng hiện tại.\n- Nếu câu có \"tháng trước\":\n  - startdate = ngày 01 của tháng trước\n  - enddate = ngày cuối của tháng trước.\n- Nếu câu có \"năm YYYY\":\n  - startdate = 01/01/YYYY\n  - enddate = 31/12/YYYY.\n\nQuy tắc:\n- Format ngày: YYYY-MM-DD\n- Nếu không tìm thấy thời gian thì để startdate và enddate rỗng.\n- Chỉ trả JSON, không giải thích.\n\nOutput format:\n\n{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          256,
+          2288
+        ],
+        "id": "c77d5423-3f2a-41ef-bedd-a9aec8f12d04",
+        "name": "AI Agent11"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          464,
+          2480
+        ],
+        "id": "0754dbff-1daa-4d66-b51b-08fd44539441",
+        "name": "Structured Output Parser11"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT TOP 3\nPIC_CODE\nFROM R5PICKLISTS\nWHERE PIC_CLASS = 'THVT'\nAND PIC_REQUIRED BETWEEN \n'{{ $json.output.startdate }}'\nAND \n'{{ $json.output.enddate }}'\nORDER BY PIC_REQUIRED DESC\n\nSELECT COUNT(*) AS TONGSO\nFROM R5PICKLISTS\nWHERE PIC_CLASS = 'THVT'\nAND PIC_REQUIRED BETWEEN \n'{{ $json.output.startdate }}'\nAND \n'{{ $json.output.enddate }}'"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          608,
+          2288
+        ],
+        "id": "757c4748-a8a7-471a-bf6b-bc1279a90d43",
+        "name": "Microsoft SQL7",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nlet total = 0;\nconst codes = [];\n\nitems.forEach(i => {\n  if (i.json.PIC_CODE) {\n    codes.push(i.json.PIC_CODE);\n  }\n  if (i.json.TONGSO !== undefined) {\n    total = i.json.TONGSO;\n  }\n});\n\nlet answer = `Số phiếu thu hồi vật tư là: ${total}\\n\\n`;\n\nconst suggestions = codes.map(c => `Xem chi tiết Phiếu thu hồi vật tư ${c}`);\n\nreturn [\n  {\n    json: {\n      answer,\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          816,
+          2288
+        ],
+        "id": "24a9081d-1518-42f4-b49f-c0008ef6f6cf",
+        "name": "Code7"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất mã phiếu thu hồi vật tư từ câu người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Tìm mã phiếu thu hồi vật tư trong câu.\n- Mã phiếu thường là một số gồm 6 chữ số (ví dụ: 102541, 123456).\n- Nếu có nhiều số, hãy chọn số có 5–6 chữ số có khả năng là mã phiếu.\n- Nếu không tìm thấy thì để trống.\n\nChỉ trả JSON đúng format sau, không giải thích:\n\n{\n  \"pic_code\": \"22121\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          256,
+          2704
+        ],
+        "id": "15198e3c-af9f-4adc-a329-4c7e7c787a0d",
+        "name": "AI Agent12"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"pic_code\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          448,
+          2896
+        ],
+        "id": "bb45cb51-5379-4387-82b1-8766a14da9d2",
+        "name": "Structured Output Parser12"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "declare @PCV nvarchar(20) = {{ $json.output.pic_code }}\n\nselect \nPIC_CODE as MACONGVIEC,\nPIC_DESC as MOTA,\nUCO_DESC as TRANGTHAI\nfrom R5PICKLISTS\nleft join R5UCODES \non PIC_STATUS = UCO_CODE and UCO_ENTITY = 'PLST'\n where pic_code = @PCV\n\nselect \nTH_PAR_DESC as TENVATTU,\nTH_QTY as SOLUONG,\nTH_UOM as DONVITINH\n from U5THTH where CODE =  @PCV\n"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          672,
+          2704
+        ],
+        "id": "686e8257-36c5-4caa-9f26-911e4cfae159",
+        "name": "Microsoft SQL8",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// item đầu là thông tin phiếu\nconst header = items.find(i => i.json.MACONGVIEC);\nconst materials = items.filter(i => i.json.TENVATTU);\n\nconst h = header.json;\n\nlet answer = `Thông tin phiếu thu hồi vật tư:\\n`;\nanswer += `Mã phiếu: ${h.MACONGVIEC}\\n`;\nanswer += `Mô tả: ${h.MOTA}\\n`;\nanswer += `Trạng thái: ${h.TRANGTHAI}\\n\\n`;\n\nanswer += `Các vật tư thu hồi:\\n\\n`;\nanswer += `| Tên vật tư | Số lượng | Đơn vị |\\n`;\nanswer += `|------------|----------|--------|\\n`;\n\nmaterials.forEach(m => {\n  const p = m.json;\n  answer += `| ${p.TENVATTU} | ${p.SOLUONG ?? \"\"} | ${p.DONVITINH ?? \"\"} |\\n`;\n});\n\n// lấy tháng năm hiện tại\nconst now = new Date();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\n\n// suggestion\nconst suggestions = [\n  `Các dự toán vật tư trong tháng ${month}/${year}`,\n  `Lịch sử giao dịch vật tư trong ${month}/${year}``\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          912,
+          2704
+        ],
+        "id": "eb01baca-02a1-4038-adb1-c49c1748a797",
+        "name": "Code8"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI phân loại yêu cầu tra cứu phiếu dự toán vật tư.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nHãy phân loại câu hỏi thành 1 trong 2 case:\n\nCase 1:\n- Người dùng hỏi danh sách các phiếu dự toán vật tư theo khoảng thời gian.\n- Thường có các từ như:\n  - từ ngày ... đến ngày ...\n  - tháng .../...\n  - tháng này, tháng trước\n  - quý ...\n  - năm ...\n  - các phiếu, danh sách phiếu\n\nCase 2:\n- Người dùng muốn xem chi tiết một phiếu dự toán vật tư cụ thể.\n- Thường có mã phiếu (chuỗi số 5–6 chữ số).\n- Ví dụ: phiếu 123456, xem phiếu 10254.\n\nQuy tắc:\n- Nếu câu có mã phiếu cụ thể → case = 2\n- Nếu câu có thông tin thời gian hoặc hỏi nhiều phiếu → case = 1\n- Nếu có cả hai → ưu tiên case = 2\n\nChỉ trả JSON đúng format sau, không giải thích:\n\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"case\": \"1\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -896,
+          3328
+        ],
+        "id": "96fc5898-77b4-4a2b-baec-1a4d1fd9fe10",
+        "name": "AI Agent13"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -704,
+          3536
+        ],
+        "id": "4cf87817-8fbf-4ac5-a48c-4fe1a0dedc41",
+        "name": "Structured Output Parser13"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "5cf24d83-cfa9-4cce-af8a-e6148a15a523"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "thời gian"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c49c9cf2-3b72-4ece-b489-8463cdaac816",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "1 phiếu"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -480,
+          3328
+        ],
+        "id": "501b65b0-5e37-40b1-bfe1-75192e9c89e4",
+        "name": "Switch5"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất khoảng thời gian từ câu hỏi của người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Xác định ngày bắt đầu (startdate) và ngày kết thúc (enddate) dựa trên câu hỏi.\n- Nếu câu có dạng \"từ ngày ... đến ngày ...\" thì lấy đúng 2 ngày đó.\n- Nếu câu có \"tháng MM/YYYY\" thì:\n  - startdate = ngày 01/MM/YYYY\n  - enddate = ngày cuối của tháng đó.\n- Nếu câu có \"tháng này\":\n  - startdate = ngày 01 của tháng hiện tại\n  - enddate = ngày cuối của tháng hiện tại.\n- Nếu câu có \"tháng trước\":\n  - startdate = ngày 01 của tháng trước\n  - enddate = ngày cuối của tháng trước.\n- Nếu câu có \"năm YYYY\":\n  - startdate = 01/01/YYYY\n  - enddate = 31/12/YYYY.\n\nQuy tắc:\n- Format ngày: YYYY-MM-DD\n- Nếu không tìm thấy thời gian thì để startdate và enddate rỗng.\n- Chỉ trả JSON, không giải thích.\n\nOutput format:\n\n{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          80,
+          3104
+        ],
+        "id": "ba784e9c-740f-48d1-a431-750a73f40081",
+        "name": "AI Agent14"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          288,
+          3296
+        ],
+        "id": "f9369d51-67a2-4384-b020-67dcc888ef16",
+        "name": "Structured Output Parser14"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT TOP 3\nPIC_CODE\nFROM R5PICKLISTS\nWHERE PIC_CLASS = 'THVT'\nAND PIC_REQUIRED BETWEEN \n'{{ $json.output.startdate }}'\nAND \n'{{ $json.output.enddate }}'\nORDER BY PIC_REQUIRED DESC\n\nSELECT COUNT(*) AS TONGSO\nFROM R5PICKLISTS\nWHERE PIC_CLASS = 'THVT'\nAND PIC_REQUIRED BETWEEN \n'{{ $json.output.startdate }}'\nAND \n'{{ $json.output.enddate }}'"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          624,
+          3104
+        ],
+        "id": "5f54418d-18ed-43a4-a97a-b6575a82e340",
+        "name": "Microsoft SQL9",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nlet total = 0;\nconst codes = [];\n\nitems.forEach(i => {\n  if (i.json.PIC_CODE) {\n    codes.push(i.json.PIC_CODE);\n  }\n  if (i.json.TONGSO !== undefined) {\n    total = i.json.TONGSO;\n  }\n});\n\nlet answer = `Số phiếu dự toán vật tư là: ${total}\\n\\n`;\n\nconst suggestions = codes.map(c => `Xem chi tiết phiếu dự toán vật tư ${c}`);\n\nreturn [\n  {\n    json: {\n      answer,\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          3104
+        ],
+        "id": "b68a0b95-1130-4803-90b8-a9b04e943533",
+        "name": "Code9"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất mã phiếu thu hồi vật tư từ câu người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Tìm mã phiếu thu hồi vật tư trong câu.\n- Mã phiếu thường là một số gồm 6 chữ số (ví dụ: 102541, 123456).\n- Nếu có nhiều số, hãy chọn số có 5–6 chữ số có khả năng là mã phiếu.\n- Nếu không tìm thấy thì để trống.\n\nChỉ trả JSON đúng format sau, không giải thích:\n\n{\n  \"pic_code\": \"22121\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          48,
+          3552
+        ],
+        "id": "3cceb14c-99e8-497b-8b30-4d2e59610763",
+        "name": "AI Agent15"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"pic_code\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          240,
+          3744
+        ],
+        "id": "c9c14e88-75b3-43b4-b76b-e4843365994e",
+        "name": "Structured Output Parser15"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "declare @PCV nvarchar(20) = {{ $json.output.pic_code }}\n\nselect \nPIC_CODE as MACONGVIEC,\nPIC_DESC as MOTA,\nUCO_DESC as TRANGTHAI\nfrom R5PICKLISTS\nleft join R5UCODES \non PIC_STATUS = UCO_CODE and UCO_ENTITY = 'PLST'\n where pic_code = @PCV\n\nselect \nTH_PAR_DESC as TENVATTU,\nTH_QTY as SOLUONG,\nTH_UOM as DONVITINH\n from U5THTH where CODE =  @PCV\n"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          624,
+          3552
+        ],
+        "id": "d1856616-885f-4ba1-868e-9935bf034af6",
+        "name": "Microsoft SQL10",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// item đầu là thông tin phiếu\nconst header = items.find(i => i.json.MACONGVIEC);\nconst materials = items.filter(i => i.json.TENVATTU);\n\nconst h = header.json;\n\nlet answer = `Thông tin phiếu thu hồi vật tư:\\n`;\nanswer += `Mã phiếu: ${h.MACONGVIEC}\\n`;\nanswer += `Mô tả: ${h.MOTA}\\n`;\nanswer += `Trạng thái: ${h.TRANGTHAI}\\n\\n`;\n\nanswer += `Các vật tư thu hồi:\\n\\n`;\nanswer += `| Tên vật tư | Số lượng | Đơn vị |\\n`;\nanswer += `|------------|----------|--------|\\n`;\n\nmaterials.forEach(m => {\n  const p = m.json;\n  answer += `| ${p.TENVATTU} | ${p.SOLUONG ?? \"\"} | ${p.DONVITINH ?? \"\"} |\\n`;\n});\n\n// lấy tháng năm hiện tại\nconst now = new Date();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\n\n// suggestion\nconst suggestions = [\n  `Các dự toán vật tư trong tháng ${month}/${year}`,\n  `Lịch sử giao dịch vật tư trong ${month}/${year}`\n];\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          864,
+          3552
+        ],
+        "id": "7145baea-7a1f-40d2-8d36-762d42244f7e",
+        "name": "Code10"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Phân loại câu sau cho tra cứu lịch sử giao dịch vật tư:\n\"{{ $json.output.query }}\"\n\nCase 1: có thông tin thời gian trong câu, như từ ngày...đến ngày..., tháng/năm, quý, năm, tháng này, tháng trước.\nCase 2: có 1 mã vật tư hoặc 1 tên vật tư cụ thể.\n\nLuật:\n- Có thời gian => case 1\n- Có mã vật tư hoặc tên vật tư => case 2\n- Có cả hai => ưu tiên case 2\n\nChỉ trả JSON:\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"case\": \"1\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -912,
+          4304
+        ],
+        "id": "44e76998-1202-413e-9ef5-946b5fbb47b9",
+        "name": "AI Agent16"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"query\": \"\",\n\t\"case\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          -736,
+          4528
+        ],
+        "id": "edfc5dd4-d8a3-4c6c-bf17-46ab04ff78a7",
+        "name": "Structured Output Parser16"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "5cf24d83-cfa9-4cce-af8a-e6148a15a523"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "thời gian"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "c49c9cf2-3b72-4ece-b489-8463cdaac816",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "1 VT"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -464,
+          4304
+        ],
+        "id": "c3e9a250-7f0a-47d2-aef5-6c98cad0cd01",
+        "name": "Switch6"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất khoảng thời gian từ câu hỏi của người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Xác định ngày bắt đầu (startdate) và ngày kết thúc (enddate) dựa trên câu hỏi.\n- Nếu câu có dạng \"từ ngày ... đến ngày ...\" thì lấy đúng 2 ngày đó.\n- Nếu câu có \"tháng MM/YYYY\" thì:\n  - startdate = ngày 01/MM/YYYY\n  - enddate = ngày cuối của tháng đó.\n- Nếu câu có \"tháng này\":\n  - startdate = ngày 01 của tháng hiện tại\n  - enddate = ngày cuối của tháng hiện tại.\n- Nếu câu có \"tháng trước\":\n  - startdate = ngày 01 của tháng trước\n  - enddate = ngày cuối của tháng trước.\n- Nếu câu có \"năm YYYY\":\n  - startdate = 01/01/YYYY\n  - enddate = 31/12/YYYY.\n\nQuy tắc:\n- Format ngày: YYYY-MM-DD\n- Nếu không tìm thấy thời gian thì để startdate và enddate rỗng.\n- Chỉ trả JSON, không giải thích.\n\nOutput format:\n\n{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          48,
+          3936
+        ],
+        "id": "d4723d64-ef49-4653-8f45-42990c22d745",
+        "name": "AI Agent17"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"startdate\": \"\",\n  \"enddate\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          256,
+          4128
+        ],
+        "id": "3f9b3d65-a629-423d-84e2-b558de2cff6e",
+        "name": "Structured Output Parser17"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "DECLARE @startdate DATE = '{{ $json.output.startdate }}';\nDECLARE @enddate   DATE = '{{ $json.output.enddate }}';\n\nSELECT COUNT(*) AS TONGSO\nFROM R5TRANSLINES\nWHERE TRL_DATE >= @startdate\nAND TRL_DATE < DATEADD(day, 1, @enddate);\n\nSELECT TOP 3 TRL_PART\nFROM R5TRANSLINES\nWHERE TRL_DATE >= @startdate\nAND TRL_DATE < DATEADD(day, 1, @enddate)\nORDER BY TRL_DATE DESC;"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          3936
+        ],
+        "id": "7b3521c7-a6ad-47b7-9f6d-9dfd97f883b0",
+        "name": "Microsoft SQL11",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nlet total = 0;\nconst parts = [];\n\nitems.forEach(i => {\n  if (i.json.TONGSO !== undefined) {\n    total = i.json.TONGSO;\n  }\n  if (i.json.TRL_PART) {\n    parts.push(i.json.TRL_PART);\n  }\n});\n\nlet answer = `Có khoảng ${total} giao dịch vật tư trong khoảng thời gian đã chọn.`;\n\nconst suggestions = parts.map(p => `Xem chi tiết các giao dịch của vật tư ${p}`);\n\nreturn [\n  {\n    json: {\n      answer,\n      suggestions\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          3936
+        ],
+        "id": "7e02ecd4-8a37-4bf6-942d-0c4356690b54",
+        "name": "Code11"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Bạn là AI trích xuất thông tin vật tư từ câu người dùng.\n\nCâu người dùng:\n\"{{ $json.output.query }}\"\n\nNhiệm vụ:\n- Tìm thông tin vật tư trong câu.\n- Thông tin vật tư có thể là:\n  1. Mã vật tư (ví dụ: 104.0002, 22121, 100123)\n  2. Tên vật tư (ví dụ: axit sulfuric, que hàn, dầu thải, zeolit)\n\nQuy tắc:\n- Nếu có mã vật tư thì ưu tiên trả về mã vật tư.\n- Nếu không có mã nhưng có tên vật tư thì trả về tên vật tư.\n- Nếu không tìm thấy thì để trống.\n- Không tự tạo thông tin mới.\n\nChỉ trả JSON đúng format sau, không giải thích:\n\n{\n  \"material\": \"\"\n}",
+          "hasOutputParser": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          32,
+          4448
+        ],
+        "id": "a519fc87-adc7-45e5-a9e9-b8b9e145b786",
+        "name": "AI Agent18"
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n  \"material\": \"\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          224,
+          4640
+        ],
+        "id": "248969f5-5e25-4f75-9d81-033055c1ed7f",
+        "name": "Structured Output Parser18"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "declare @MAVATTU nvarchar(200)  = '{{ $json.output.material }}'\ndeclare @MVT nvarchar(200)\nSELECT TOP 1\n    @MVT = PAR_CODE\nFROM R5PARTS\nWHERE\n    (@MAVATTU <> '' AND PAR_CODE = @MAVATTU)\n    OR\n    (@MAVATTU <> '' AND PAR_DESC LIKE '%' + @MAVATTU + '%');\nselect \n  par_code as MAVATTU,\n  par_desc as MOTAVATTU\n  from R5PARTS where PAR_CODE = @MVT\nSELECT\nTRL_STORE as KHO,\nTRL_DESC as MOTA,\nTRL_QTY as SOLUONG,\nTRL_DATE as NGAY\nFROM R5TRANSLINES where TRL_PART = @MVT"
+        },
+        "type": "n8n-nodes-base.microsoftSql",
+        "typeVersion": 1.1,
+        "position": [
+          496,
+          4448
+        ],
+        "id": "48ebfc09-6a1d-45f1-bca3-bf1fc0bdd2db",
+        "name": "Microsoft SQL12",
+        "credentials": {
+          "microsoftSql": {
+            "id": "AT5U1bQMNp2mhBdY",
+            "name": "Microsoft SQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\n// item chứa thông tin vật tư\nconst material = items.find(i => i.json.MAVATTU);\nconst transactions = items.filter(i => i.json.KHO);\n\nconst m = material.json;\n\nlet answer = `Dưới đây là danh sách các giao dịch của vật tư:\\n`;\nanswer += `Mã vật tư: ${m.MAVATTU}\\n`;\nanswer += `Tên vật tư: ${m.MOTAVATTU}\\n\\n`;\n\nanswer += `| Kho | Số lượng | Ngày |\\n`;\nanswer += `|-----|----------|------|\\n`;\n\ntransactions.forEach(t => {\n  const p = t.json;\n  answer += `| ${p.KHO ?? \"\"} | ${p.SOLUONG ?? \"\"} | ${p.NGAY ?? \"\"} |\\n`;\n});\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions: []\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          704,
+          4448
+        ],
+        "id": "170041d9-2ebb-4093-99aa-b21a5e2d034b",
+        "name": "Code12"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -1088,
+          560
+        ],
+        "id": "3f2bcdff-4958-4357-8d03-6ec25671fced",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -2672,
+          3248
+        ],
+        "id": "86415838-8072-45b0-97d4-fdf4b78803c6",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          64,
+          496
+        ],
+        "id": "c1508dfa-ad38-409a-bfd9-100d11b0ae3e",
+        "name": "OpenAI Chat Model2",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          880,
+          624
+        ],
+        "id": "8969419f-9caf-4be9-a773-0f8c80dd3512",
+        "name": "OpenAI Chat Model3",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          896
+        ],
+        "id": "efabe1f5-7d6e-4633-ba22-7cfd80bbcb03",
+        "name": "OpenAI Chat Model4",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          816,
+          1072
+        ],
+        "id": "cc7a77df-df67-4301-89f0-6b2ec4377040",
+        "name": "OpenAI Chat Model5",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          64,
+          1264
+        ],
+        "id": "961fe182-9804-4ade-8df0-963617ea878c",
+        "name": "OpenAI Chat Model6",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          528,
+          1696
+        ],
+        "id": "9f3b0792-e29a-4c79-9092-72660c1044e7",
+        "name": "OpenAI Chat Model7",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -832,
+          2112
+        ],
+        "id": "67bc5d4f-cbb5-41cb-96f3-752b2f5ec1ff",
+        "name": "OpenAI Chat Model8",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          320,
+          2128
+        ],
+        "id": "9efee48b-a0ac-4629-97cc-ae64eb5c6e32",
+        "name": "OpenAI Chat Model9",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          272,
+          2560
+        ],
+        "id": "8b03e5b8-31fc-42af-a2d7-8573e9eece56",
+        "name": "OpenAI Chat Model10",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -784,
+          2880
+        ],
+        "id": "d3af447e-6ca5-4045-8335-b0f42ab45cdc",
+        "name": "OpenAI Chat Model11",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          96,
+          2928
+        ],
+        "id": "d5f048fc-c890-41e1-8628-4eeb8a0dd4b9",
+        "name": "OpenAI Chat Model12",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          32,
+          3392
+        ],
+        "id": "b91a94d4-e877-48a7-b6c8-9345b7d4c564",
+        "name": "OpenAI Chat Model13",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -960,
+          3584
+        ],
+        "id": "7384cd46-7661-467c-8370-4ffc5c855d9f",
+        "name": "OpenAI Chat Model14",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          48,
+          3792
+        ],
+        "id": "1586502c-9cdd-4b3e-bec9-bdd65198498e",
+        "name": "OpenAI Chat Model15",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -32,
+          4192
+        ],
+        "id": "aae2e358-99a3-4779-aa59-6d8c64fdf8c9",
+        "name": "OpenAI Chat Model16",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          48,
+          4704
+        ],
+        "id": "bea4fe7e-ddbf-4277-a121-a1316c6f4bea",
+        "name": "OpenAI Chat Model17",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          -1120,
+          4592
+        ],
+        "id": "3bca7077-799b-4193-a68d-e648d52c1596",
+        "name": "OpenAI Chat Model18",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent6",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent10",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent13",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent16",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser1": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent1": {
+        "main": [
+          [
+            {
+              "node": "Switch1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch1": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent2": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser2": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent2",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL1": {
+        "main": [
+          [
+            {
+              "node": "Code1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser3": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent3",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent3": {
+        "main": [
+          [
+            {
+              "node": "Switch2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch2": {
+        "main": [
+          [
+            {
+              "node": "AI Agent4",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser5": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent4",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent4": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL2": {
+        "main": [
+          [
+            {
+              "node": "Code2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser6": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent5",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent5": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL3": {
+        "main": [
+          [
+            {
+              "node": "Code3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser4": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent6",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent6": {
+        "main": [
+          [
+            {
+              "node": "Switch3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch3": {
+        "main": [
+          [
+            {
+              "node": "AI Agent7",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent9",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent8",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser7": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent7",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent7": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL4": {
+        "main": [
+          [
+            {
+              "node": "Code4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser9": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent9",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent9": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL5": {
+        "main": [
+          [
+            {
+              "node": "Code5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser10": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent8",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent8": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL6",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL6": {
+        "main": [
+          [
+            {
+              "node": "Code6",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser8": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent10",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent10": {
+        "main": [
+          [
+            {
+              "node": "Switch4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch4": {
+        "main": [
+          [
+            {
+              "node": "AI Agent11",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent12",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser11": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent11",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent11": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL7",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL7": {
+        "main": [
+          [
+            {
+              "node": "Code7",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser12": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent12",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent12": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL8",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL8": {
+        "main": [
+          [
+            {
+              "node": "Code8",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser13": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent13",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent13": {
+        "main": [
+          [
+            {
+              "node": "Switch5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch5": {
+        "main": [
+          [
+            {
+              "node": "AI Agent14",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent15",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser14": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent14",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent14": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL9",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL9": {
+        "main": [
+          [
+            {
+              "node": "Code9",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent15": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL10",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser15": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent15",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL10": {
+        "main": [
+          [
+            {
+              "node": "Code10",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser16": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent16",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent16": {
+        "main": [
+          [
+            {
+              "node": "Switch6",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch6": {
+        "main": [
+          [
+            {
+              "node": "AI Agent17",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent18",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser17": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent17",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent17": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL11",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL11": {
+        "main": [
+          [
+            {
+              "node": "Code11",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser18": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent18",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent18": {
+        "main": [
+          [
+            {
+              "node": "Microsoft SQL12",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Microsoft SQL12": {
+        "main": [
+          [
+            {
+              "node": "Code12",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model2": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent2",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model3": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent4",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model4": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent3",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model5": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent5",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model6": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent7",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model7": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent9",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model8": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent6",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model9": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent8",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model10": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent11",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model11": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent10",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model12": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent12",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model13": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent14",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model14": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent13",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model15": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent15",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model16": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent17",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model17": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent18",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model18": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent16",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "V Cat",
+    "name": "Version 3097d958",
+    "description": "",
+    "autosaved": true
+  },
   "tags": []
 }
