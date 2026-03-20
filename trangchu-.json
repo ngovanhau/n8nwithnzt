@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-19T01:13:41.072Z",
+  "updatedAt": "2026-03-20T14:59:41.078Z",
   "createdAt": "2026-03-17T11:03:41.111Z",
   "id": "nrBzmFLcbGiRZDGi",
   "name": "Trangchu",
@@ -9,9 +9,10 @@
     {
       "parameters": {
         "public": true,
-        "availableInChat": true,
-        "agentName": "Alix",
-        "options": {}
+        "mode": "webhook",
+        "options": {
+          "responseMode": "lastNode"
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.3,
@@ -41,6 +42,7 @@
       ],
       "id": "786d931c-51b6-46c6-a722-236fde24f119",
       "name": "AI Agent",
+      "alwaysOutputData": true,
       "onError": "continueRegularOutput"
     },
     {
@@ -595,7 +597,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "b4c189a6-c5e1-4e37-8540-e83b1b3ab41f",
+  "versionId": "fce94e20-ec83-4cbb-aa22-a37d240253ce",
   "activeVersionId": "b4c189a6-c5e1-4e37-8540-e83b1b3ab41f",
   "triggerCount": 1,
   "shared": [
