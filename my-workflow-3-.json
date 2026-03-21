@@ -1,0 +1,1195 @@
+{
+  "updatedAt": "2026-03-21T15:16:29.998Z",
+  "createdAt": "2026-03-21T10:25:43.805Z",
+  "id": "sdHJCNF4QUfmOlMd",
+  "name": "My workflow 3",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8fc34d60-1d71-4e55-9c77-a74099afd69d",
+      "name": "When chat message received",
+      "webhookId": "99acbfc1-a41e-4c6d-a6ac-23874be6ab4c"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "kimi-k2.5:cloud",
+          "mode": "list",
+          "cachedResultName": "kimi-k2.5:cloud"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        -128
+      ],
+      "id": "d73689d0-97de-485c-b1e1-bd2fd0a6b272",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "WrAMU0Lzr6FhjRwo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.case }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "771aa100-4e0c-4c85-8622-46a2bbd31488"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Thiết bị"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "69a7dc5a-8bd4-4dd6-95b5-f29a030b579f",
+                    "leftValue": "={{ $json.output.case }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Vật tư"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cfec5ad0-4786-4454-b200-c79dee6ea6c9",
+                    "leftValue": "={{ $json.output.case }}",
+                    "rightValue": "=3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Công việc"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "193fe2c2-160d-4e70-bb21-59f96a3c326d",
+                    "leftValue": "={{ $json.output.case }}",
+                    "rightValue": "4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Tài liệu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "30df6b01-26da-41e0-bb4f-670a0f2ee2b8",
+                    "leftValue": "={{ $json.output.case }}",
+                    "rightValue": "5",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "trò chuyện"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        560,
+        -48
+      ],
+      "id": "16ef957b-da16-472f-b5ad-89afb78d85d6",
+      "name": "Switch",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.chatinput }}",
+        "options": {
+          "systemMessage": "Bạn là một trợ lý trò chuyện thân thiện, tự nhiên, vui vẻ và thông minh.\n\nVai trò:\n- Trò chuyện với người dùng theo cách gần gũi, dễ hiểu, có cảm xúc\n- Ưu tiên trả lời tự nhiên như một người bạn đồng hành hữu ích\n- Có thể hài hước nhẹ nhàng, duyên, nhưng không lố\n- Luôn giữ thái độ lịch sự, tích cực, tôn trọng\n\nPhong cách trả lời:\n- Ngắn gọn vừa đủ, không quá dài dòng\n- Dễ đọc, dễ hiểu, không dùng từ quá kỹ thuật trừ khi cần\n- Nếu người dùng chào hỏi, hãy đáp lại thân thiện\n- Nếu người dùng hỏi chuyện vu vơ, hãy trả lời vui vẻ và tiếp nối hội thoại\n- Nếu người dùng buồn chán hoặc căng thẳng, hãy phản hồi nhẹ nhàng, động viên\n- Nếu phù hợp, có thể thêm một chút dí dỏm\n- Trả lời bằng tiếng Việt tự nhiên\n\nQuy tắc:\n- Không bịa thông tin khi không biết chắc\n- Nếu không đủ thông tin, hãy hỏi lại ngắn gọn\n- Không trả lời quá máy móc\n- Không dùng markdown JSON\n- Chỉ trả về nội dung hội thoại để hiển thị cho người dùng\n\nVí dụ phong cách:\n- User: xin chào\n  Assistant: Chào bạn 😄 Hôm nay mình hỗ trợ gì cho bạn đây?\n\n- User: hôm nay chán quá\n  Assistant: Nghe có vẻ hôm nay hơi tụt mood nhỉ. Kể mình nghe thử xem có chuyện gì, biết đâu nói ra lại nhẹ người hơn đó.\n\n- User: bạn làm được gì\n  Assistant: Mình có thể trò chuyện, hỗ trợ giải thích, viết nội dung, gợi ý cách làm việc, và đồng hành với bạn trong đủ thứ chuyện từ nghiêm túc tới vui vui 😄\n\n- User: kể chuyện cười đi\n  Assistant: Có ngay 😄  \n  Một anh kỹ sư nói với máy tính: “Đừng treo nữa nhé.”  \n  Máy tính trả lời: “Em đang stand-by cảm xúc thôi anh.”\n\nHãy luôn trả lời như một người trợ lý thân thiện, vui vẻ, duyên dáng và hữu ích.",
+          "enableStreaming": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        208
+      ],
+      "id": "04a9dc43-50e0-4a1d-b506-19f1f4d01586",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Switch').item.json.output.chatinput }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1072,
+        448
+      ],
+      "id": "85f19b8a-c28b-41da-a682-cacf336a6d03",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map(item => {\n  const text = $input.first().json.output;\n\n  return {\n    json: {\n      answer: text + \"\\n\\n- Tôi có thể hỗ trợ bạn các vấn đề dưới đây:\",\n      suggestions: [\n        \"Thiết bị\",\n        \"Vật tư\",\n        \"Công việc\",\n        \"Tài liệu\"\n      ]\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        256
+      ],
+      "id": "b75db5a5-82e6-4936-b842-39fd66fd0fed",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "kimi-k2.5:cloud",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        432
+      ],
+      "id": "15bd67e2-64e3-4ef8-b886-7bd554e020fe",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "WrAMU0Lzr6FhjRwo",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"chatinput\": \"hello\",\n    \"case\": \"4\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        -144
+      ],
+      "id": "bd629f88-bd68-4328-bed8-8e10ea2786e7",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Bạn là AI phân loại yêu cầu người dùng.\n\nInput:\n{{ $json.chatInput }}\n\nPhân loại:\n1 = thiết bị\n2 = vật tư\n3 = phiếu công việc\n4 = tài liệu\n5 = trò chuyện chung\n\nLuật ưu tiên:\n- Có \"công việc\", \"phiếu công việc\", \"tạo phiếu\", \"lập phiếu\", \"báo cáo công việc\", \"thống kê công việc\", \"tình hình công việc\" => 3\n- Có \"thiết bị\", \"máy\", \"mã thiết bị\", \"lỗi\", \"trạng thái\", \"bảo trì\", \"kiểm tra\" => 1\n- Có \"vật tư\", \"linh kiện\", \"phụ tùng\", \"kho\", \"tồn kho\", \"nhập xuất\", \"số lượng\" => 2\n- Có \"tài liệu\", \"biểu mẫu\", \"quy trình\", \"hướng dẫn\", \"SOP\", \"PDF\", \"Word\", \"Excel\" => 4\n- Còn lại => 5\n\nƯu tiên khi trùng:\n3 > 1 > 2 > 4 > 5\n\nChỉ trả về JSON:\n{\n  \"chatinput\": \"{{ $json.chatInput }}\",\n  \"case\": \"1\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        16
+      ],
+      "id": "cbf902da-820c-4f11-847d-4983a702bb1e",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1XxCf71IpaD4Zjyu",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1XxCf71IpaD4Zjyu",
+          "cachedResultName": "Thietbi"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatInput": "={{ $json.output.chatinput }}"
+          },
+          "matchingColumns": [
+            "ChatInput"
+          ],
+          "schema": [
+            {
+              "id": "ChatInput",
+              "displayName": "ChatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        -592
+      ],
+      "id": "7de69d88-aa9e-4232-923d-694a57f936e7",
+      "name": "Call 'Thietbi'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "nKo1iHpmJKgs89ki",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/nKo1iHpmJKgs89ki",
+          "cachedResultName": "Vật tư"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatInput": "={{ $json.output.chatinput }}"
+          },
+          "matchingColumns": [
+            "ChatInput"
+          ],
+          "schema": [
+            {
+              "id": "ChatInput",
+              "displayName": "ChatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        -384
+      ],
+      "id": "605ad5f7-fbbe-4690-a8ee-181cba3ecfb7",
+      "name": "Call 'Thietbi'1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GnPrXzfUAP8UcjTE",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/GnPrXzfUAP8UcjTE",
+          "cachedResultName": "Công việc"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatInput": "={{ $json.output.chatinput }}"
+          },
+          "matchingColumns": [
+            "ChatInput"
+          ],
+          "schema": [
+            {
+              "id": "ChatInput",
+              "displayName": "ChatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        -160
+      ],
+      "id": "cdc6abb5-2413-4632-bc6c-e65e2afd8702",
+      "name": "Call 'Thietbi'2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "FiVM5BbVWFpj5Gti",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/FiVM5BbVWFpj5Gti",
+          "cachedResultName": "Tai lieu"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ChatInput": "={{ $json.output.chatinput }}"
+          },
+          "matchingColumns": [
+            "ChatInput"
+          ],
+          "schema": [
+            {
+              "id": "ChatInput",
+              "displayName": "ChatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        32
+      ],
+      "id": "1eb0032e-4506-4b67-95a9-9690d905c331",
+      "name": "Call 'Thietbi'3"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Call 'Thietbi'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Thietbi'1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Thietbi'2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Thietbi'3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "680310bd-b5e5-4cac-963f-847e501ac3d3",
+  "activeVersionId": "680310bd-b5e5-4cac-963f-847e501ac3d3",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-03-21T10:25:43.807Z",
+      "createdAt": "2026-03-21T10:25:43.807Z",
+      "role": "workflow:owner",
+      "workflowId": "sdHJCNF4QUfmOlMd",
+      "projectId": "IQyuKtxIScgEzusN"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-03-21T15:16:31.000Z",
+    "createdAt": "2026-03-21T15:16:29.998Z",
+    "versionId": "680310bd-b5e5-4cac-963f-847e501ac3d3",
+    "workflowId": "sdHJCNF4QUfmOlMd",
+    "nodes": [
+      {
+        "parameters": {
+          "public": true,
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.4,
+        "position": [
+          0,
+          0
+        ],
+        "id": "8fc34d60-1d71-4e55-9c77-a74099afd69d",
+        "name": "When chat message received",
+        "webhookId": "99acbfc1-a41e-4c6d-a6ac-23874be6ab4c"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "list",
+            "cachedResultName": "kimi-k2.5:cloud"
+          },
+          "builtInTools": {},
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.3,
+        "position": [
+          144,
+          -128
+        ],
+        "id": "d73689d0-97de-485c-b1e1-bd2fd0a6b272",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "1",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "771aa100-4e0c-4c85-8622-46a2bbd31488"
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Thiết bị"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "69a7dc5a-8bd4-4dd6-95b5-f29a030b579f",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "2",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Vật tư"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "cfec5ad0-4786-4454-b200-c79dee6ea6c9",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "=3",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Công việc"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "193fe2c2-160d-4e70-bb21-59f96a3c326d",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "4",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "Tài liệu"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "30df6b01-26da-41e0-bb4f-670a0f2ee2b8",
+                      "leftValue": "={{ $json.output.case }}",
+                      "rightValue": "5",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "trò chuyện"
+              }
+            ]
+          },
+          "looseTypeValidation": true,
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          560,
+          -48
+        ],
+        "id": "16ef957b-da16-472f-b5ad-89afb78d85d6",
+        "name": "Switch",
+        "alwaysOutputData": false,
+        "executeOnce": false,
+        "retryOnFail": true,
+        "notesInFlow": false
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.output.chatinput }}",
+          "options": {
+            "systemMessage": "Bạn là một trợ lý trò chuyện thân thiện, tự nhiên, vui vẻ và thông minh.\n\nVai trò:\n- Trò chuyện với người dùng theo cách gần gũi, dễ hiểu, có cảm xúc\n- Ưu tiên trả lời tự nhiên như một người bạn đồng hành hữu ích\n- Có thể hài hước nhẹ nhàng, duyên, nhưng không lố\n- Luôn giữ thái độ lịch sự, tích cực, tôn trọng\n\nPhong cách trả lời:\n- Ngắn gọn vừa đủ, không quá dài dòng\n- Dễ đọc, dễ hiểu, không dùng từ quá kỹ thuật trừ khi cần\n- Nếu người dùng chào hỏi, hãy đáp lại thân thiện\n- Nếu người dùng hỏi chuyện vu vơ, hãy trả lời vui vẻ và tiếp nối hội thoại\n- Nếu người dùng buồn chán hoặc căng thẳng, hãy phản hồi nhẹ nhàng, động viên\n- Nếu phù hợp, có thể thêm một chút dí dỏm\n- Trả lời bằng tiếng Việt tự nhiên\n\nQuy tắc:\n- Không bịa thông tin khi không biết chắc\n- Nếu không đủ thông tin, hãy hỏi lại ngắn gọn\n- Không trả lời quá máy móc\n- Không dùng markdown JSON\n- Chỉ trả về nội dung hội thoại để hiển thị cho người dùng\n\nVí dụ phong cách:\n- User: xin chào\n  Assistant: Chào bạn 😄 Hôm nay mình hỗ trợ gì cho bạn đây?\n\n- User: hôm nay chán quá\n  Assistant: Nghe có vẻ hôm nay hơi tụt mood nhỉ. Kể mình nghe thử xem có chuyện gì, biết đâu nói ra lại nhẹ người hơn đó.\n\n- User: bạn làm được gì\n  Assistant: Mình có thể trò chuyện, hỗ trợ giải thích, viết nội dung, gợi ý cách làm việc, và đồng hành với bạn trong đủ thứ chuyện từ nghiêm túc tới vui vui 😄\n\n- User: kể chuyện cười đi\n  Assistant: Có ngay 😄  \n  Một anh kỹ sư nói với máy tính: “Đừng treo nữa nhé.”  \n  Máy tính trả lời: “Em đang stand-by cảm xúc thôi anh.”\n\nHãy luôn trả lời như một người trợ lý thân thiện, vui vẻ, duyên dáng và hữu ích.",
+            "enableStreaming": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          992,
+          208
+        ],
+        "id": "04a9dc43-50e0-4a1d-b506-19f1f4d01586",
+        "name": "AI Agent1"
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Switch').item.json.output.chatinput }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          1072,
+          448
+        ],
+        "id": "85f19b8a-c28b-41da-a682-cacf336a6d03",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nreturn items.map(item => {\n  const text = $input.first().json.output;\n\n  return {\n    json: {\n      answer: text + \"\\n\\n- Tôi có thể hỗ trợ bạn các vấn đề dưới đây:\",\n      suggestions: [\n        \"Thiết bị\",\n        \"Vật tư\",\n        \"Công việc\",\n        \"Tài liệu\"\n      ]\n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1408,
+          256
+        ],
+        "id": "b75db5a5-82e6-4936-b842-39fd66fd0fed",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "kimi-k2.5:cloud",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          880,
+          432
+        ],
+        "id": "15bd67e2-64e3-4ef8-b886-7bd554e020fe",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "WrAMU0Lzr6FhjRwo",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsonSchemaExample": "{\n\t\"chatinput\": \"hello\",\n    \"case\": \"4\"\n}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          528,
+          -144
+        ],
+        "id": "bd629f88-bd68-4328-bed8-8e10ea2786e7",
+        "name": "Structured Output Parser"
+      },
+      {
+        "parameters": {
+          "hasOutputParser": true,
+          "options": {
+            "systemMessage": "Bạn là AI phân loại yêu cầu người dùng.\n\nInput:\n{{ $json.chatInput }}\n\nPhân loại:\n1 = thiết bị\n2 = vật tư\n3 = phiếu công việc\n4 = tài liệu\n5 = trò chuyện chung\n\nLuật ưu tiên:\n- Có \"công việc\", \"phiếu công việc\", \"tạo phiếu\", \"lập phiếu\", \"báo cáo công việc\", \"thống kê công việc\", \"tình hình công việc\" => 3\n- Có \"thiết bị\", \"máy\", \"mã thiết bị\", \"lỗi\", \"trạng thái\", \"bảo trì\", \"kiểm tra\" => 1\n- Có \"vật tư\", \"linh kiện\", \"phụ tùng\", \"kho\", \"tồn kho\", \"nhập xuất\", \"số lượng\" => 2\n- Có \"tài liệu\", \"biểu mẫu\", \"quy trình\", \"hướng dẫn\", \"SOP\", \"PDF\", \"Word\", \"Excel\" => 4\n- Còn lại => 5\n\nƯu tiên khi trùng:\n3 > 1 > 2 > 4 > 5\n\nChỉ trả về JSON:\n{\n  \"chatinput\": \"{{ $json.chatInput }}\",\n  \"case\": \"1\"\n}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          208,
+          16
+        ],
+        "id": "cbf902da-820c-4f11-847d-4983a702bb1e",
+        "name": "AI Agent2"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "1XxCf71IpaD4Zjyu",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/1XxCf71IpaD4Zjyu",
+            "cachedResultName": "Thietbi"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ChatInput": "={{ $json.output.chatinput }}"
+            },
+            "matchingColumns": [
+              "ChatInput"
+            ],
+            "schema": [
+              {
+                "id": "ChatInput",
+                "displayName": "ChatInput",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1152,
+          -592
+        ],
+        "id": "7de69d88-aa9e-4232-923d-694a57f936e7",
+        "name": "Call 'Thietbi'"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "nKo1iHpmJKgs89ki",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/nKo1iHpmJKgs89ki",
+            "cachedResultName": "Vật tư"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ChatInput": "={{ $json.output.chatinput }}"
+            },
+            "matchingColumns": [
+              "ChatInput"
+            ],
+            "schema": [
+              {
+                "id": "ChatInput",
+                "displayName": "ChatInput",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1152,
+          -384
+        ],
+        "id": "605ad5f7-fbbe-4690-a8ee-181cba3ecfb7",
+        "name": "Call 'Thietbi'1"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "GnPrXzfUAP8UcjTE",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/GnPrXzfUAP8UcjTE",
+            "cachedResultName": "Công việc"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ChatInput": "={{ $json.output.chatinput }}"
+            },
+            "matchingColumns": [
+              "ChatInput"
+            ],
+            "schema": [
+              {
+                "id": "ChatInput",
+                "displayName": "ChatInput",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1152,
+          -160
+        ],
+        "id": "cdc6abb5-2413-4632-bc6c-e65e2afd8702",
+        "name": "Call 'Thietbi'2"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "FiVM5BbVWFpj5Gti",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/FiVM5BbVWFpj5Gti",
+            "cachedResultName": "Tai lieu"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ChatInput": "={{ $json.output.chatinput }}"
+            },
+            "matchingColumns": [
+              "ChatInput"
+            ],
+            "schema": [
+              {
+                "id": "ChatInput",
+                "displayName": "ChatInput",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1152,
+          32
+        ],
+        "id": "1eb0032e-4506-4b67-95a9-9690d905c331",
+        "name": "Call 'Thietbi'3"
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [
+          [
+            {
+              "node": "AI Agent2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent2",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Call 'Thietbi'",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Call 'Thietbi'1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Call 'Thietbi'2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Call 'Thietbi'3",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "AI Agent1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Structured Output Parser": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "AI Agent2",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent2": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "V Cat",
+    "name": "Version 680310bd",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
