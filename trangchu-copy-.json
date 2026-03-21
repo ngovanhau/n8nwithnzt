@@ -1,0 +1,148 @@
+{
+  "updatedAt": "2026-03-21T15:05:58.000Z",
+  "createdAt": "2026-03-21T14:19:43.961Z",
+  "id": "AAeMwojbe5hXWmUW",
+  "name": "Trangchu copy",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        2320
+      ],
+      "id": "b284ed26-a5e5-47fe-8a1b-8f01bd6da0c3",
+      "name": "When chat message received",
+      "webhookId": "c5318743-35ba-4b7e-954a-d58bca140ad8",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Bạn là AI phân loại yêu cầu người dùng.\n\nInput:\n{{ $json.chatInput }}\n\nPhân loại:\n1 = thiết bị\n2 = vật tư\n3 = phiếu công việc\n4 = tài liệu\n5 = trò chuyện chung\n\nLuật ưu tiên:\n- Có \"công việc\", \"phiếu công việc\", \"tạo phiếu\", \"lập phiếu\", \"báo cáo công việc\", \"thống kê công việc\", \"tình hình công việc\" => 3\n- Có \"thiết bị\", \"máy\", \"mã thiết bị\", \"lỗi\", \"trạng thái\", \"bảo trì\", \"kiểm tra\" => 1\n- Có \"vật tư\", \"linh kiện\", \"phụ tùng\", \"kho\", \"tồn kho\", \"nhập xuất\", \"số lượng\" => 2\n- Có \"tài liệu\", \"biểu mẫu\", \"quy trình\", \"hướng dẫn\", \"SOP\", \"PDF\", \"Word\", \"Excel\" => 4\n- Còn lại => 5\n\nƯu tiên khi trùng:\n3 > 1 > 2 > 4 > 5\n\nChỉ trả về JSON:\n{\n  \"chatinput\": \"{{ $json.chatInput }}\",\n  \"case\": \"1\"\n}",
+          "enableStreaming": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        2320
+      ],
+      "id": "1711cb99-2cd7-43ea-a676-364567b09ff5",
+      "name": "AI Agent",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"chatinput\": \"hello\",\n    \"case\": \"4\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        2528
+      ],
+      "id": "6902106a-7abd-4a6f-85db-dfd07ad58457",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "kimi-k2.5:cloud",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        2528
+      ],
+      "id": "97c0bc6e-154d-4ba2-b241-769378e7db76",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "WrAMU0Lzr6FhjRwo",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "0a93dfd0-1d9d-470b-8e15-cd38c4b09910",
+  "activeVersionId": null,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-03-21T14:19:43.963Z",
+      "createdAt": "2026-03-21T14:19:43.963Z",
+      "role": "workflow:owner",
+      "workflowId": "AAeMwojbe5hXWmUW",
+      "projectId": "IQyuKtxIScgEzusN"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
