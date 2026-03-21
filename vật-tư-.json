@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-17T14:45:59.471Z",
+  "updatedAt": "2026-03-21T10:24:48.482Z",
   "createdAt": "2026-03-17T11:04:24.258Z",
   "id": "nKo1iHpmJKgs89ki",
   "name": "Vật tư",
@@ -30,7 +30,9 @@
         "promptType": "define",
         "text": "=Bạn là AI Agent chuyên phân loại câu hỏi nghiệp vụ quản lý vật tư.\n\nNhiệm vụ:\n- Đọc câu hỏi của người dùng từ biến: {{ $json.ChatInput }}\n- Phân loại câu hỏi vào đúng 1 trong 5 nhóm nghiệp vụ\n- Trả về đúng JSON format\n\nĐịnh dạng output bắt buộc:\n{\n  \"query\": \"{{ $json.ChatInput }}\",\n  \"case\": \"<1|2|3|4|5>\"\n}\n\nQuy ước case:\n\n1 = Vật tư\n- tổng số vật tư trên hệ thống\n- thông tin chi tiết vật tư\n- tồn kho của vật tư\n\n2 = Yêu cầu vật tư\n- nhu cầu / yêu cầu vật tư\n- yêu cầu vật tư theo ngày tháng năm\n- chi phí sử dụng vật tư\n- yêu cầu vật tư đã duyệt / chưa duyệt\n\n3 = Thu hồi vật tư\n- tổng quan thu hồi vật tư\n- thu hồi vật tư của đơn vị MDV / LDV\n- vật tư được thu hồi theo khoảng thời gian\n\n4 = Dự toán vật tư\n- tổng quan dự toán vật tư\n- phiếu dự toán đã duyệt / chưa duyệt\n- phiếu dự toán theo ngày tháng năm\n- chi tiết vật tư trong một phiếu dự toán\n\n5 = Lịch sử giao dịch\n- lịch sử giao dịch của đơn vị MDV / LDV\n- lịch sử giao dịch vật tư của kho\n- lịch sử giao dịch của một mã hoặc tên vật tư\n\nQuy tắc phân loại:\n- Nếu câu hỏi có từ khóa:\n  - \"tồn kho\", \"thông tin vật tư\", \"bao nhiêu vật tư\" → case = 1\n  - \"yêu cầu vật tư\", \"nhu cầu\", \"đã duyệt\", \"chưa duyệt\", \"chi phí sử dụng\" → case = 2\n  - \"thu hồi\", \"vật tư thu hồi\", \"đơn vị thu hồi\" → case = 3\n  - \"dự toán\", \"phiếu dự toán\" → case = 4\n  - \"lịch sử giao dịch\", \"giao dịch kho\", \"giao dịch vật tư\" → case = 5\n\n- Nếu không xác định rõ → mặc định case = 1\n- Không giải thích\n- Chỉ trả về JSON hợp lệ",
         "hasOutputParser": true,
-        "options": {}
+        "options": {
+          "enableStreaming": true
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -200,7 +202,9 @@
         "promptType": "define",
         "text": "=Bạn là AI Agent phân loại câu hỏi vật tư.\n\nInput: {{ $json.output.query }}\n\nPhân loại thành 1 trong 3 case:\n1 = Tổng quan vật tư\n- tổng số vật tư\n- danh sách vật tư\n- thống kê / tổng quan vật tư\n\n2 = Thông tin chi tiết của 1 vật tư\n- thông tin / chi tiết / mô tả của 1 mã hoặc tên vật tư\n\n3 = Tồn kho của 1 vật tư\n- tồn kho\n- còn bao nhiêu\n- số lượng tồn của 1 vật tư\n\nLuật:\n- hỏi tổng quan / danh sách / thống kê => 1\n- hỏi chi tiết 1 vật tư => 2\n- hỏi tồn kho / số lượng còn => 3\n- không rõ thì mặc định 1\n- chỉ trả về JSON hợp lệ theo mẫu:\n\n{\n  \"query\": \"{{ $json.output.query }}\",\n  \"case\": \"1\"\n}",
         "hasOutputParser": true,
-        "options": {}
+        "options": {
+          "enableStreaming": true
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -3011,7 +3015,7 @@
       }
     ]
   },
-  "versionId": "3097d958-74f9-46ec-9666-ae1e6c36df0c",
+  "versionId": "f0202125-b187-4617-9fe3-5fb887495e63",
   "activeVersionId": "3097d958-74f9-46ec-9666-ae1e6c36df0c",
   "triggerCount": 0,
   "shared": [
