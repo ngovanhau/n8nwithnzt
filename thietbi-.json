@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-17T14:44:14.428Z",
+  "updatedAt": "2026-03-22T01:39:44.479Z",
   "createdAt": "2026-03-17T11:04:43.133Z",
   "id": "1XxCf71IpaD4Zjyu",
   "name": "Thietbi",
@@ -291,7 +291,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\n\nlet answer = \"\";\nlet suggestions = [];\nlet tongHeThong = 0;\n\nfor (const item of items) {\n  const d = item.json;\n\n  if (d.ma_donvi !== undefined && d.ma_donvi !== null) {\n\n    let tenDonVi = d.ten_donvi;\n    let isDonViChung = false;\n\n    if (tenDonVi === \"Default organization\") {\n      tenDonVi = \"Đơn vị chung\";\n      isDonViChung = true;\n    }\n\n    answer += `- **Đơn vị**: ${tenDonVi}\\n`;\n    answer += `+ Số thiết bị là: ${d.tong_thiet_bi}\\n\\n`;\n\n    // chỉ tạo suggestion nếu KHÔNG phải đơn vị chung\n    if (!isDonViChung) {\n      if (d.ma_donvi) {\n        suggestions.push(`Thống kê tổng quan thiết bị của đơn vị ${d.ma_donvi}`);\n      }\n\n      if (tenDonVi) {\n        suggestions.push(`Thống kê tổng quan thiết bị của đơn vị ${tenDonVi}`);\n      }\n    }\n  }\n\n  if (d.tong_thiet_bi_toan_he_thong !== undefined) {\n    tongHeThong = d.tong_thiet_bi_toan_he_thong;\n  }\n}\n\nanswer += `**Tổng số thiết bị của toàn hệ thống là:** ${tongHeThong}`;\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions: suggestions\n    }\n  }\n];"
+        "jsCode": "const items = $input.all();\n\nlet answer = \"\";\nlet suggestions = [];\nlet tongHeThong = 0;\n\nfor (const item of items) {\n  const d = item.json;\n\n  if (d.ma_donvi !== undefined && d.ma_donvi !== null) {\n\n    let tenDonVi = d.ten_donvi;\n    let isDonViChung = false;\n\n    if (tenDonVi === \"Default organization\") {\n      tenDonVi = \"Đơn vị chung\";\n      isDonViChung = true;\n    }\n\n    answer += `- **Đơn vị**: ${tenDonVi}\\n`;\n    answer += `+ Số thiết bị là: ${d.tong_thiet_bi}\\n\\n`;\n\n    // chỉ tạo suggestion nếu KHÔNG phải đơn vị chung\n    if (!isDonViChung) {\n      if (d.ma_donvi) {\n        suggestions.push(`Thống kê tổng quan thiết bị của đơn vị ${d.ma_donvi}`);\n      }\n    }\n  }\n\n  if (d.tong_thiet_bi_toan_he_thong !== undefined) {\n    tongHeThong = d.tong_thiet_bi_toan_he_thong;\n  }\n}\n\nanswer += `**Tổng số thiết bị của toàn hệ thống là:** ${tongHeThong}`;\n\nreturn [\n  {\n    json: {\n      answer: answer.trim(),\n      suggestions: suggestions\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -899,8 +899,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -2320,
-        2080
+        -2384,
+        2064
       ],
       "id": "76d6e290-b9d8-498b-b7dd-63efdd3aa117",
       "name": "OpenAI Chat Model3",
@@ -1476,12 +1476,12 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "ChatInput": "Xem danh sách thiết bị thuộc loại Thiết bị khai thác"
+          "ChatInput": "Thiết bị"
         }
       }
     ]
   },
-  "versionId": "1a95ec9b-be99-4ac4-89b2-6d83cf43a077",
+  "versionId": "e66c0b48-771d-47ac-bd4d-b20e455afe7f",
   "activeVersionId": "1a95ec9b-be99-4ac4-89b2-6d83cf43a077",
   "triggerCount": 0,
   "shared": [
